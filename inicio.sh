@@ -63,9 +63,6 @@ if ! (github-authenticated githubssh); then
   pub=$(cat .ssh/id_rsagithub.pub)
   echo ''
   echo ''
-  echo ''
-  echo ''
-  echo ''
   for (( ; ; ))
   do
       githubuser=0
