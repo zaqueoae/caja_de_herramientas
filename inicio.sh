@@ -55,7 +55,7 @@ if ! (github-authenticated githubssh); then
   echo 'Host githubssh' >> .ssh/github
   echo '        User git' >> .ssh/github
   echo '        HostName github.com' >> .ssh/github
-  echo '        IdentityFile /root/.ssh/id_rsagithub' >> .ssh/github
+  echo '        IdentityFile ~/.ssh/id_rsagithub' >> .ssh/github
   
   #Añado las llaves a ssh agent
   eval "$(ssh-agent)"
@@ -86,11 +86,11 @@ if ! (github-authenticated githubssh); then
   done
 fi
 
-rm -rf /root/swap
-rm -rf /root/bash
-mkdir -p /root/swap
-mkdir -p /root/bash
-git clone githubssh:zaqueoae/bashcatinfog.git /root/swap
-cp -rfp /root/swap/herramientas/* /root/bash/
-rm -rf /root/swap
-bash /root/bash/herramientas.sh
+rm -rf ~/swap
+rm -rf ~/bash
+mkdir -p ~/swap
+mkdir -p ~/bash
+git clone githubssh:zaqueoae/bashcatinfog.git ~/swap
+cp -rfp ~/swap/herramientas/* ~/bash/
+rm -rf ~/swap
+bash ~/bash/herramientas.sh
