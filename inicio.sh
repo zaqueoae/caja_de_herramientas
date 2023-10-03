@@ -88,6 +88,6 @@ rm -rf ~/bash
 mkdir -p ~/swap
 mkdir -p ~/bash
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap
-cp -rfp ~/swap/herramientas/* ~/bash/
+cp -rfp ~/swap/0-Caja_de_herramientas/* ~/bash/
 rm -rf ~/swap
-#bash ~/bash/herramientas.sh
+bash ~/bash/herramientas.sh
