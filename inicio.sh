@@ -70,7 +70,8 @@ if ! (github-authenticated githubssh); then
       read -r -p "Escribe tu usuario de github: " githubuser
       echo "Tu usuario de github es $githubuser"
       echo ''
-      read -r -p "Escribe la api-key de $githubuser: " githubpass
+      read -r -p "Escribe la api-key de $githubuser: " -s githubpass
+      echo ''
       curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
       if github-authenticated githubssh; then
           echo "Hemos conectado"
