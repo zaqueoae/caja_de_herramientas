@@ -90,4 +90,4 @@ mkdir -p ~/bash
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap
 cp -rfp ~/swap/0-Caja_de_herramientas/* ~/bash/
 rm -rf ~/swap
-bash ~/bash/herramientas.sh
+bash ~/bash/tools.sh
