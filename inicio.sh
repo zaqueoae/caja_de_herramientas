@@ -73,6 +73,7 @@ if ! (github-authenticated githubssh); then
           echo "Algo ha fallado: el nombre de usuario o el api token."
           echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
           read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
+          echo ''
       fi
   done
 fi
