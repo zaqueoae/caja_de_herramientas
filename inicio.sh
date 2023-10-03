@@ -16,8 +16,6 @@ github-authenticated() {
 
 
 arreglo_ssh() {
-if [ "$OPTIONMENU" = "1" ] || [ "$OPTIONMENU" = "2" ] || [ "$OPTIONMENU" = "3" ]
-then
     mkdir -p .ssh
     rm -f .ssh/config
     touch .ssh/config
@@ -29,18 +27,17 @@ then
     then 
         touch .ssh/github
     fi
-
+    
     echo 'StrictHostKeyChecking no' >> .ssh/config
     echo 'XAuthLocation /opt/X11/bin/xauth' >> .ssh/config
     echo 'ForwardAgent yes' >> .ssh/config
-
+    
     echo 'Include backup' >> .ssh/config
     echo 'Include github' >> .ssh/config
-
+    
     echo 'Host *' >> .ssh/config
     echo 'IdentitiesOnly=yes' >> .ssh/config
     echo 'PreferredAuthentications=publickey' >> .ssh/config
-fi
 }
 
 
