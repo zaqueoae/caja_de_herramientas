@@ -27,33 +27,33 @@ then
     touch .ssh/github
 fi
 
-echo 'StrictHostKeyChecking no' >> .ssh/config
-echo 'XAuthLocation /opt/X11/bin/xauth' >> .ssh/config
-echo 'ForwardAgent yes' >> .ssh/config
+echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
+echo 'ForwardAgent yes' >> ~/.ssh/config
 
-echo 'Include backup' >> .ssh/config
-echo 'Include github' >> .ssh/config
+echo 'Include backup' >> ~/.ssh/config
+echo 'Include github' >> ~/.ssh/config
 
-echo 'Host *' >> .ssh/config
-echo 'IdentitiesOnly=yes' >> .ssh/config
-echo 'PreferredAuthentications=publickey' >> .ssh/config
+echo 'Host *' >> ~/.ssh/config
+echo 'IdentitiesOnly=yes' >> ~/.ssh/config
+echo 'PreferredAuthentications=publickey' >> ~/.ssh/config
 
 if ! (github-authenticated githubssh); then
-  ssh-keygen -b 4096 -t rsa -f .ssh/id_rsagithub -q -N ""
-  chmod 400 .ssh/id_rsagithub
-  chmod 644 .ssh/id_rsagithub.pub
+  ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsagithub -q -N ""
+  chmod 400 ~/.ssh/id_rsagithub
+  chmod 644 ~/.ssh/id_rsagithub.pub
   
-  rm -f .ssh/github
-  touch .ssh/github
-  echo 'Host githubssh' >> .ssh/github
-  echo '        User git' >> .ssh/github
-  echo '        HostName github.com' >> .ssh/github
-  echo '        IdentityFile ~/.ssh/id_rsagithub' >> .ssh/github
+  rm -f ~/.ssh/github
+  touch ~/.ssh/github
+  echo 'Host githubssh' >> ~/.ssh/github
+  echo '        User git' >> ~/.ssh/github
+  echo '        HostName github.com' >> ~/.ssh/github
+  echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
   
   #Añado las llaves a ssh agent
   eval "$(ssh-agent)"
-  ssh-add .ssh/id_rsagithub
-  pub=$(cat .ssh/id_rsagithub.pub)
+  ssh-add ~/.ssh/id_rsagithub
+  pub=$(cat ~/.ssh/id_rsagithub.pub)
   echo ''
   echo ''
   for (( ; ; ))
