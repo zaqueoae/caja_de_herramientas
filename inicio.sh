@@ -15,33 +15,29 @@ github-authenticated() {
 }
 
 
-arreglo_ssh() {
-    mkdir -p .ssh
-    rm -f .ssh/config
-    touch .ssh/config
-    if  [[ ! (-s  .ssh/backup)  ]]
-    then 
-        touch .ssh/backup
-    fi
-    if  [[ ! (-s  .ssh/github)  ]]
-    then 
-        touch .ssh/github
-    fi
-    
-    echo 'StrictHostKeyChecking no' >> .ssh/config
-    echo 'XAuthLocation /opt/X11/bin/xauth' >> .ssh/config
-    echo 'ForwardAgent yes' >> .ssh/config
-    
-    echo 'Include backup' >> .ssh/config
-    echo 'Include github' >> .ssh/config
-    
-    echo 'Host *' >> .ssh/config
-    echo 'IdentitiesOnly=yes' >> .ssh/config
-    echo 'PreferredAuthentications=publickey' >> .ssh/config
-}
+mkdir -p .ssh
+rm -f .ssh/config
+touch .ssh/config
+if  [[ ! (-s  .ssh/backup)  ]]
+then 
+    touch .ssh/backup
+fi
+if  [[ ! (-s  .ssh/github)  ]]
+then 
+    touch .ssh/github
+fi
 
+echo 'StrictHostKeyChecking no' >> .ssh/config
+echo 'XAuthLocation /opt/X11/bin/xauth' >> .ssh/config
+echo 'ForwardAgent yes' >> .ssh/config
 
-arreglo_ssh
+echo 'Include backup' >> .ssh/config
+echo 'Include github' >> .ssh/config
+
+echo 'Host *' >> .ssh/config
+echo 'IdentitiesOnly=yes' >> .ssh/config
+echo 'PreferredAuthentications=publickey' >> .ssh/config
+
 if ! (github-authenticated githubssh); then
   ssh-keygen -b 4096 -t rsa -f .ssh/id_rsagithub -q -N ""
   chmod 400 .ssh/id_rsagithub
