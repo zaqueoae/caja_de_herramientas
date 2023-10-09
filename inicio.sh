@@ -156,17 +156,25 @@ rm -rf ~/bash
 mkdir -p ~/swap
 mkdir -p ~/swap/bash
 mkdir -p ~/bash
+if [[ "$SWAP" = "swap" ]]
+then
 mkdir -p ~/swap/ssh
 mkdir -p ~/swap/hash
-
+mkdir -p ~/gitconfig
+mkdir -p ~/hash
+fi
 
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
 cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
+
 if [[ "$SWAP" = "swap" ]]
 then
     git clone swap:patcatinside/ssh.git ~/swap/ssh
-    git clone githubssh:patcatinside/hash.git ~/swap/hash
+    cp -rfp ~/swap/ssh/* ~/gitconfig/
+    git clone swap:patcatinside/hash.git ~/swap/hash
+    cp -rfp ~/swap/hash/* ~/hash/
 fi
+
 rm -rf ~/swap
 }
 
