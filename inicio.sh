@@ -181,7 +181,30 @@ rm -rf ~/swap
 execute_bash () {
 if [[ "$SWAP" = "swap" ]]
 then
-    bash ~/bash/tools.sh
+#Descargo bash scripts
+bash ~/bash/tools.sh <<EOF
+y
+y
+y
+y
+EOF
+#Conecto con los discos de backups
+bash ~/bash/tools.sh <<EOF
+y
+y
+y
+y
+EOF
+#Configuro el servidor
+bash ~/bash/tools.sh <<EOF
+y
+y
+y
+y
+EOF
+else
+#En caso de que no sea un nodo swap, corro las herramientas
+bash ~/bash/tools.sh
 fi
 }
 
