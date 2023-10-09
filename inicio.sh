@@ -69,13 +69,7 @@ conexion_shh_github_bash_catinfog () {
       chmod 400 ~/.ssh/id_rsagithub
       chmod 644 ~/.ssh/id_rsagithub.pub
       
-      rm -f ~/.ssh/github
-      touch ~/.ssh/github
-      echo ''
-      echo 'Host githubssh' >> ~/.ssh/github
-      echo '        User git' >> ~/.ssh/github
-      echo '        HostName github.com' >> ~/.ssh/github
-      echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
+      
       
       #Añado las llaves a ssh agent
       eval "$(ssh-agent)"
@@ -93,6 +87,17 @@ conexion_shh_github_bash_catinfog () {
           read -r -p "Escribe la api-key de $githubuser: " -s githubpass
           echo ''
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
+          
+          sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
+          echo ''
+          echo "$githubuser"
+          echo 'Host githubssh' >> ~/.ssh/github
+          echo '        User git' >> ~/.ssh/github
+          echo '        HostName github.com' >> ~/.ssh/github
+          echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
+          echo "$githubuser"
+          echo ''
+          
           if github-authenticated githubssh; then
               echo "Hemos conectado"
               break
@@ -112,13 +117,6 @@ conexion_shh_github_swap () {
       chmod 400 ~/.ssh/id_swap
       chmod 644 ~/.ssh/id_swap.pub
 
-      
-      echo ''
-      echo 'Host swap' >> ~/.ssh/github
-      echo '        User git' >> ~/.ssh/github
-      echo '        HostName github.com' >> ~/.ssh/github
-      echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
-      
       #Añado las llaves a ssh agent
       eval "$(ssh-agent)"
       ssh-add ~/.ssh/id_swap
@@ -135,6 +133,17 @@ conexion_shh_github_swap () {
           read -r -p "Escribe la api-key de $githubuser: " -s githubpass
           echo ''
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
+          
+          sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
+          echo ''
+          echo "$githubuser"
+          echo 'Host swap' >> ~/.ssh/github
+          echo '        User git' >> ~/.ssh/github
+          echo '        HostName github.com' >> ~/.ssh/github
+          echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
+          echo "$githubuser"
+          echo ''
+
           if github-authenticated githubssh; then
               echo "Hemos conectado"
               break
@@ -147,7 +156,6 @@ conexion_shh_github_swap () {
       done
     fi
 }
-
 
 clonacion_bash_catinfog () {
 rm -rf ~/swap
