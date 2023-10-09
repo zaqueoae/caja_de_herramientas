@@ -88,7 +88,7 @@ conexion_shh_github_bash_catinfog () {
           echo ''
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
           
-          sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
+          sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
           echo '' >> ~/.ssh/github
           echo "#$githubuser" >> ~/.ssh/github
           echo 'Host githubssh' >> ~/.ssh/github
@@ -133,7 +133,8 @@ conexion_shh_github_swap () {
           read -r -p "Escribe la api-key de $githubuser: " -s githubpass
           echo ''
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
-          
+
+          sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
           sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
           echo '' >> ~/.ssh/github
           echo "#$githubuser" >> ~/.ssh/github
