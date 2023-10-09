@@ -1,5 +1,13 @@
 #!/bin/bash
 
+SWAP="$1"
+
+# Set Color
+RED="\e[31m"
+GREEN="\e[32m"
+BLUE="\e[34m"
+ENDCOLOR="\e[0m"
+
 github-authenticated() {
     # Attempt to ssh to GitHub
     ssh -T "$1" &>/dev/null
@@ -14,7 +22,7 @@ github-authenticated() {
     return 2
 }
 
-
+printf "\n${BLUE}========================Creado los archivos config ssh========================${ENDCOLOR}\n"
 mkdir -p .ssh
 rm -f .ssh/config
 touch .ssh/config
@@ -26,6 +34,15 @@ if  [[ ! (-s  .ssh/github)  ]]
 then 
     touch .ssh/github
 fi
+if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
+then 
+    touch .ssh/swappro
+fi
+
+if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
+then 
+    touch .ssh/swaptest
+fi
 
 echo 'StrictHostKeyChecking no' >> ~/.ssh/config
 echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
@@ -34,9 +51,17 @@ echo 'ForwardAgent yes' >> ~/.ssh/config
 echo 'Include backup' >> ~/.ssh/config
 echo 'Include github' >> ~/.ssh/config
 
+if  [[ "$SWAP" = "swap" ]]
+then 
+    echo 'Include swappro' >> ~/.ssh/config
+    echo 'Include swaptest' >> ~/.ssh/config
+fi
+
 echo 'Host *' >> ~/.ssh/config
 echo 'IdentitiesOnly=yes' >> ~/.ssh/config
 echo 'PreferredAuthentications=publickey' >> ~/.ssh/config
+printf "${GREEN}========================¡Archivos config ssh creados!========================${ENDCOLOR}\n"
+
 
 if ! (github-authenticated githubssh); then
   ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsagithub -q -N ""
