@@ -154,10 +154,27 @@ clonacion_bash_catinfog () {
 rm -rf ~/swap
 rm -rf ~/bash
 mkdir -p ~/swap
+mkdir -p ~/swap/bash
 mkdir -p ~/bash
-git clone githubssh:zaqueoae/bashcatinfog.git ~/swap
-cp -rfp ~/swap/0-Caja_de_herramientas/* ~/bash/
+mkdir -p ~/swap/ssh
+mkdir -p ~/swap/hash
+
+
+git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
+cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
+if [[ "$SWAP" = "swap" ]]
+then
+    git clone swap:patcatinside/ssh.git ~/swap/ssh
+    git clone githubssh:patcatinside/hash.git ~/swap/hash
+fi
 rm -rf ~/swap
+}
+
+execute_bash () {
+if [[ "$SWAP" = "swap" ]]
+then
+    bash ~/bash/tools.sh
+fi
 }
 
 printf "\n${BLUE}======================== Creando los archivos config ssh ========================${ENDCOLOR}\n"
