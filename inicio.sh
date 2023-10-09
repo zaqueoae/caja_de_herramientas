@@ -133,9 +133,7 @@ conexion_shh_github_swap () {
           read -r -p "Escribe la api-key de $githubuser: " -s githubpass
           echo ''
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
-
           sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
-          sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
           echo '' >> ~/.ssh/github
           echo "#$githubuser" >> ~/.ssh/github
           echo 'Host swap' >> ~/.ssh/github
@@ -230,4 +228,4 @@ clonacion_bash_catinfog
 printf "${GREEN}======================== ¡Clonados los archivos bash catinfog! ========================${ENDCOLOR}\n"
 
 printf "\n${BLUE}======================== Ejecutanto la caja de herramientas ========================${ENDCOLOR}\n"
-bash ~/bash/tools.sh
+execute_bash
