@@ -89,14 +89,14 @@ conexion_shh_github_bash_catinfog () {
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
           
           sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
-          echo ''
+          echo '' >> ~/.ssh/github
           echo "$githubuser" >> ~/.ssh/github
           echo 'Host githubssh' >> ~/.ssh/github
           echo '        User git' >> ~/.ssh/github
           echo '        HostName github.com' >> ~/.ssh/github
           echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
           echo "$githubuser" >> ~/.ssh/github
-          echo ''
+          echo '' >> ~/.ssh/github
           
           if github-authenticated githubssh; then
               echo "Hemos conectado"
@@ -135,14 +135,14 @@ conexion_shh_github_swap () {
           curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
           
           sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
-          echo ''
+          echo '' >> ~/.ssh/github
           echo "$githubuser" >> ~/.ssh/github
           echo 'Host swap' >> ~/.ssh/github
           echo '        User git' >> ~/.ssh/github
           echo '        HostName github.com' >> ~/.ssh/github
           echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
           echo "$githubuser" >> ~/.ssh/github
-          echo ''
+          echo '' >> ~/.ssh/github
 
           if github-authenticated githubssh; then
               echo "Hemos conectado"
