@@ -90,12 +90,12 @@ conexion_shh_github_bash_catinfog () {
           
           sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
           echo ''
-          echo "$githubuser"
+          echo "$githubuser" >> ~/.ssh/github
           echo 'Host githubssh' >> ~/.ssh/github
           echo '        User git' >> ~/.ssh/github
           echo '        HostName github.com' >> ~/.ssh/github
           echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
-          echo "$githubuser"
+          echo "$githubuser" >> ~/.ssh/github
           echo ''
           
           if github-authenticated githubssh; then
@@ -136,12 +136,12 @@ conexion_shh_github_swap () {
           
           sed "/#$githubuser/,/#$githubuser/{//!d}" -i ~/.ssh/github
           echo ''
-          echo "$githubuser"
+          echo "$githubuser" >> ~/.ssh/github
           echo 'Host swap' >> ~/.ssh/github
           echo '        User git' >> ~/.ssh/github
           echo '        HostName github.com' >> ~/.ssh/github
           echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
-          echo "$githubuser"
+          echo "$githubuser" >> ~/.ssh/github
           echo ''
 
           if github-authenticated githubssh; then
