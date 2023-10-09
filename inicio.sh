@@ -140,7 +140,7 @@ conexion_shh_github_swap () {
           echo 'Host swap' >> ~/.ssh/github
           echo '        User git' >> ~/.ssh/github
           echo '        HostName github.com' >> ~/.ssh/github
-          echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
+          echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
           echo "$githubuser" >> ~/.ssh/github
           echo ''
 
