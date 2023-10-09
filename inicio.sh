@@ -120,7 +120,7 @@ conexion_shh_github_swap () {
       #Añado las llaves a ssh agent
       eval "$(ssh-agent)"
       ssh-add ~/.ssh/id_swap
-      pub=$(cat ~/.ssh/id_rsagithub.pub)
+      pub=$(cat ~/.ssh/id_swap.pub)
       echo ''
       echo ''
       for (( ; ; ))
