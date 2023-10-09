@@ -22,44 +22,48 @@ github-authenticated() {
     return 2
 }
 
+config_ssh () {
+    mkdir -p .ssh
+    rm -f .ssh/config
+    touch .ssh/config
+    if  [[ ! (-s  .ssh/backup)  ]]
+    then 
+        touch .ssh/backup
+    fi
+    if  [[ ! (-s  .ssh/github)  ]]
+    then 
+        touch .ssh/github
+    fi
+    if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
+    then 
+        touch .ssh/swappro
+    fi
+    
+    if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
+    then 
+        touch .ssh/swaptest
+    fi
+    
+    echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+    echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
+    echo 'ForwardAgent yes' >> ~/.ssh/config
+    
+    echo 'Include backup' >> ~/.ssh/config
+    echo 'Include github' >> ~/.ssh/config
+    
+    if  [[ "$SWAP" = "swap" ]]
+    then 
+        echo 'Include swappro' >> ~/.ssh/config
+        echo 'Include swaptest' >> ~/.ssh/config
+    fi
+    
+    echo 'Host *' >> ~/.ssh/config
+    echo 'IdentitiesOnly=yes' >> ~/.ssh/config
+    echo 'PreferredAuthentications=publickey' >> ~/.ssh/config
+}
+
 printf "\n${BLUE}========================Creado los archivos config ssh========================${ENDCOLOR}\n"
-mkdir -p .ssh
-rm -f .ssh/config
-touch .ssh/config
-if  [[ ! (-s  .ssh/backup)  ]]
-then 
-    touch .ssh/backup
-fi
-if  [[ ! (-s  .ssh/github)  ]]
-then 
-    touch .ssh/github
-fi
-if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
-then 
-    touch .ssh/swappro
-fi
-
-if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
-then 
-    touch .ssh/swaptest
-fi
-
-echo 'StrictHostKeyChecking no' >> ~/.ssh/config
-echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
-echo 'ForwardAgent yes' >> ~/.ssh/config
-
-echo 'Include backup' >> ~/.ssh/config
-echo 'Include github' >> ~/.ssh/config
-
-if  [[ "$SWAP" = "swap" ]]
-then 
-    echo 'Include swappro' >> ~/.ssh/config
-    echo 'Include swaptest' >> ~/.ssh/config
-fi
-
-echo 'Host *' >> ~/.ssh/config
-echo 'IdentitiesOnly=yes' >> ~/.ssh/config
-echo 'PreferredAuthentications=publickey' >> ~/.ssh/config
+config_ssh
 printf "${GREEN}========================¡Archivos config ssh creados!========================${ENDCOLOR}\n"
 
 
