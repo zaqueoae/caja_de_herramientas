@@ -111,9 +111,8 @@ conexion_shh_github_swap () {
       ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_swap -q -N ""
       chmod 400 ~/.ssh/id_swap
       chmod 644 ~/.ssh/id_swap.pub
+
       
-      rm -f ~/.ssh/github
-      touch ~/.ssh/github
       echo ''
       echo 'Host swap' >> ~/.ssh/github
       echo '        User git' >> ~/.ssh/github
