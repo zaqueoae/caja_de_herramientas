@@ -36,12 +36,12 @@ config_ssh () {
     fi
     if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
     then 
-        touch .ssh/swappro
+        touch ~/.ssh/swappro
     fi
     
     if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
     then 
-        touch .ssh/swaptest
+        touch ~/.ssh/swaptest
     fi
     
     echo 'StrictHostKeyChecking no' >> ~/.ssh/config
@@ -185,33 +185,7 @@ rm -rf ~/swap
 }
 
 execute_bash () {
-if [[ "$NODO" = "swap" ]]
-then
-#Descargo bash scripts
-bash ~/bash/tools.sh <<EOF
-y
-y
-y
-y
-EOF
-#Conecto con los discos de backups
-bash ~/bash/tools.sh <<EOF
-y
-y
-y
-y
-EOF
-#Configuro el servidor
-bash ~/bash/tools.sh <<EOF
-y
-y
-y
-y
-EOF
-else
-#En caso de que no sea un nodo swap, corro las herramientas
-bash ~/bash/tools.sh
-fi
+bash ~/bash/ini.sh
 }
 
 printf "\n${BLUE}======================== Creando los archivos config ssh ========================${ENDCOLOR}\n"
