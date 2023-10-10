@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SWAP="$1"
+NODO="$1"
 
 # Set Color
 RED="\e[31m"
@@ -34,12 +34,12 @@ config_ssh () {
     then 
         touch .ssh/github
     fi
-    if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
     then 
         touch .ssh/swappro
     fi
     
-    if  [[ "$SWAP" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
     then 
         touch .ssh/swaptest
     fi
@@ -51,7 +51,7 @@ config_ssh () {
     echo 'Include backup' >> ~/.ssh/config
     echo 'Include github' >> ~/.ssh/config
     
-    if  [[ "$SWAP" = "swap" ]]
+    if  [[ "$NODO" = "swap" ]]
     then 
         echo 'Include swappro' >> ~/.ssh/config
         echo 'Include swaptest' >> ~/.ssh/config
@@ -65,94 +65,94 @@ config_ssh () {
 
 conexion_shh_github_bash_catinfog () {
     if ! (github-authenticated githubssh); then
-      ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsagithub -q -N ""
-      chmod 400 ~/.ssh/id_rsagithub
-      chmod 644 ~/.ssh/id_rsagithub.pub
-      
-      
-      
-      #Añado las llaves a ssh agent
-      eval "$(ssh-agent)"
-      ssh-add ~/.ssh/id_rsagithub
-      pub=$(cat ~/.ssh/id_rsagithub.pub)
-      echo ''
-      echo ''
-      for (( ; ; ))
-      do
-          githubuser=0
-          githubpass=0
-          read -r -p "Escribe tu usuario de github para conectar con el repo de Bash Catinfog: " githubuser
-          echo "Tu usuario de github es $githubuser"
-          echo ''
-          read -r -p "Escribe la api-key de $githubuser: " -s githubpass
-          echo ''
-          curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
-          
-          sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
-          echo '' >> ~/.ssh/github
-          echo "#$githubuser" >> ~/.ssh/github
-          echo 'Host githubssh' >> ~/.ssh/github
-          echo '        User git' >> ~/.ssh/github
-          echo '        HostName github.com' >> ~/.ssh/github
-          echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
-          echo "#$githubuser" >> ~/.ssh/github
-          echo '' >> ~/.ssh/github
-          
-          if github-authenticated githubssh; then
-              echo "Hemos conectado"
-              break
-          else
-              echo "Algo ha fallado: el nombre de usuario o el api token."
-              echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
-              read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
-              echo ''
-          fi
-      done
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsagithub -q -N ""
+        chmod 400 ~/.ssh/id_rsagithub
+        chmod 644 ~/.ssh/id_rsagithub.pub
+        
+        
+        
+        #Añado las llaves a ssh agent
+        eval "$(ssh-agent)"
+        ssh-add ~/.ssh/id_rsagithub
+        pub=$(cat ~/.ssh/id_rsagithub.pub)
+        echo ''
+        echo ''
+        for (( ; ; ))
+        do
+            githubuser=0
+            githubpass=0
+            read -r -p "Escribe tu usuario de github para conectar con el repo de Bash Catinfog: " githubuser
+            echo "Tu usuario de github es $githubuser"
+            echo ''
+            read -r -p "Escribe la api-key de $githubuser: " -s githubpass
+            echo ''
+            curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
+            
+            sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
+            echo '' >> ~/.ssh/github
+            echo "#$githubuser" >> ~/.ssh/github
+            echo 'Host githubssh' >> ~/.ssh/github
+            echo '        User git' >> ~/.ssh/github
+            echo '        HostName github.com' >> ~/.ssh/github
+            echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
+            echo "#$githubuser" >> ~/.ssh/github
+            echo '' >> ~/.ssh/github
+            
+            if github-authenticated githubssh; then
+                echo "Hemos conectado"
+                break
+            else
+                echo "Algo ha fallado: el nombre de usuario o el api token."
+                echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+                read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
+                echo ''
+            fi
+        done
     fi
 }
 
 conexion_shh_github_swap () {
     if ! (github-authenticated swap); then
-      ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_swap -q -N ""
-      chmod 400 ~/.ssh/id_swap
-      chmod 644 ~/.ssh/id_swap.pub
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_swap -q -N ""
+        chmod 400 ~/.ssh/id_swap
+        chmod 644 ~/.ssh/id_swap.pub
 
-      #Añado las llaves a ssh agent
-      eval "$(ssh-agent)"
-      ssh-add ~/.ssh/id_swap
-      pub=$(cat ~/.ssh/id_swap.pub)
-      echo ''
-      echo ''
-      for (( ; ; ))
-      do
-          githubuser=0
-          githubpass=0
-          read -r -p "Escribe tu usuario de github pra conectar con el repo de SWAP: " githubuser
-          echo "Tu usuario de github es $githubuser"
-          echo ''
-          read -r -p "Escribe la api-key de $githubuser: " -s githubpass
-          echo ''
-          curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
-          sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
-          echo '' >> ~/.ssh/github
-          echo "#$githubuser" >> ~/.ssh/github
-          echo 'Host swap' >> ~/.ssh/github
-          echo '        User git' >> ~/.ssh/github
-          echo '        HostName github.com' >> ~/.ssh/github
-          echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
-          echo "#$githubuser" >> ~/.ssh/github
-          echo '' >> ~/.ssh/github
+        #Añado las llaves a ssh agent
+        eval "$(ssh-agent)"
+        ssh-add ~/.ssh/id_swap
+        pub=$(cat ~/.ssh/id_swap.pub)
+        echo ''
+        echo ''
+        for (( ; ; ))
+        do
+            githubuser=0
+            githubpass=0
+            read -r -p "Escribe tu usuario de github pra conectar con el repo de SWAP: " githubuser
+            echo "Tu usuario de github es $githubuser"
+            echo ''
+            read -r -p "Escribe la api-key de $githubuser: " -s githubpass
+            echo ''
+            curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
+            sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
+            echo '' >> ~/.ssh/github
+            echo "#$githubuser" >> ~/.ssh/github
+            echo 'Host swap' >> ~/.ssh/github
+            echo '        User git' >> ~/.ssh/github
+            echo '        HostName github.com' >> ~/.ssh/github
+            echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
+            echo "#$githubuser" >> ~/.ssh/github
+            echo '' >> ~/.ssh/github
 
-          if github-authenticated githubssh; then
-              echo "Hemos conectado"
-              break
-          else
-              echo "Algo ha fallado: el nombre de usuario o el api token."
-              echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
-              read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
-              echo ''
-          fi
-      done
+            if github-authenticated githubssh; then
+                echo "Hemos conectado"
+                break
+            else
+                echo "Algo ha fallado: el nombre de usuario o el api token."
+                echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+                read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
+                echo ''
+            fi
+        done
     fi
 }
 
@@ -162,7 +162,7 @@ rm -rf ~/bash
 mkdir -p ~/swap
 mkdir -p ~/swap/bash
 mkdir -p ~/bash
-if [[ "$SWAP" = "swap" ]]
+if [[ "$NODO" = "swap" ]]
 then
 mkdir -p ~/swap/ssh
 mkdir -p ~/swap/hash
@@ -173,7 +173,7 @@ fi
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
 cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
 
-if [[ "$SWAP" = "swap" ]]
+if [[ "$NODO" = "swap" ]]
 then
     git clone swap:patcatinside/ssh.git ~/swap/ssh
     cp -rfp ~/swap/ssh/* ~/gitconfig/
@@ -185,7 +185,7 @@ rm -rf ~/swap
 }
 
 execute_bash () {
-if [[ "$SWAP" = "swap" ]]
+if [[ "$NODO" = "swap" ]]
 then
 #Descargo bash scripts
 bash ~/bash/tools.sh <<EOF
