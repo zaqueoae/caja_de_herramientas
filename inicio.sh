@@ -23,23 +23,23 @@ github-authenticated() {
 }
 
 config_ssh () {
-    mkdir -p .ssh
-    rm -f .ssh/config
-    touch .ssh/config
-    if  [[ ! (-s  .ssh/backup)  ]]
+    mkdir -p ~/.ssh
+    rm -f ~/.ssh/config
+    touch ~/.ssh/config
+    if  [[ ! (-s  ~/.ssh/backup)  ]]
     then 
-        touch .ssh/backup
+        touch ~/.ssh/backup
     fi
-    if  [[ ! (-s  .ssh/github)  ]]
+    if  [[ ! (-s  ~/.ssh/github)  ]]
     then 
-        touch .ssh/github
+        touch ~/.ssh/github
     fi
-    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swappro)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swappro)  ]]
     then 
         touch ~/.ssh/swappro
     fi
     
-    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  .ssh/swaptest)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swaptest)  ]]
     then 
         touch ~/.ssh/swaptest
     fi
