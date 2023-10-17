@@ -1,3 +1,10 @@
+# Librerias necesarias
+```
+sudo apt install curl
+sudo apt install git
+```
+
+
 # General
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
