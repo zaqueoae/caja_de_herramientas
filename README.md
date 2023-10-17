@@ -59,15 +59,14 @@ curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramienta
 bash ~/inicio.sh 8
 ```
 
-<<<<<<< HEAD
+# Nodo Backups Local
+```
+curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
+bash ~/inicio.sh 9
+```
+
 # Local
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 9
-```
-=======
-# Nodo Local
-```
-curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 9
+bash ~/inicio.sh 10
 ```
