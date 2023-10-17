@@ -185,19 +185,7 @@ rm -rf ~/swap
 }
 
 execute_bash () {
-if [ -z "$COMANDEXECUTE" ]; then
-  bash ~/bash/ini.sh
-fi
-if [ "$NODO" = 1 ]; then
-  bash ~/bash/ini.sh 1
-fi
-if [ "$NODO" = 7 ]; then
-  bash ~/bash/ini.sh 7
-fi
-if [ "$NODO" = 8 ]; then
-  bash ~/bash/ini.sh 8
-fi
-
+  bash ~/bash/ini.sh "$NODO"
 }
 
 printf "\n${BLUE}======================== Creando los archivos config ssh ========================${ENDCOLOR}\n"
