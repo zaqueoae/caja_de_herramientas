@@ -34,12 +34,12 @@ config_ssh () {
     then 
         touch ~/.ssh/github
     fi
-    if  [[ "$NODO" = 7 ]] && [[ ! (-s  ~/.ssh/swappro)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swappro)  ]]
     then 
         touch ~/.ssh/swappro
     fi
     
-    if  [[ "$NODO" = 7 ]] && [[ ! (-s  ~/.ssh/swaptest)  ]]
+    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swaptest)  ]]
     then 
         touch ~/.ssh/swaptest
     fi
@@ -162,7 +162,7 @@ rm -rf ~/bash
 mkdir -p ~/swap
 mkdir -p ~/swap/bash
 mkdir -p ~/bash
-if [[ "$NODO" = 7 ]]
+if [[ "$NODO" = "swap" ]]
 then
 mkdir -p ~/swap/ssh
 mkdir -p ~/swap/hash
@@ -173,7 +173,7 @@ fi
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
 cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
 
-if [ "$NODO" = 7 ]; then
+if [ "$NODO" = "swap" ]; then
     git clone swap:patcatinside/ssh.git ~/swap/ssh
     cp -rfp ~/swap/ssh/* ~/gitconfig/
     git clone swap:patcatinside/hash.git ~/swap/hash
@@ -193,7 +193,7 @@ printf "${GREEN}======================== ¡Archivos config ssh creados! ========
 
 printf "\n${BLUE}======================== Creando conexión con Github ========================${ENDCOLOR}\n"
 conexion_shh_github_bash_catinfog
-if  [ "$NODO" = 7 ]; then
+if  [ "$NODO" = "swap" ]; then
     conexion_shh_github_swap
 fi
 printf "${GREEN}======================== ¡Conexión con Github creada! ========================${ENDCOLOR}\n"
