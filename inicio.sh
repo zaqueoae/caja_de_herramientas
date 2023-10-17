@@ -173,8 +173,7 @@ fi
 git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
 cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
 
-if [[ "$NODO" = 7 ]]
-then
+if [ "$NODO" = 7 ]; then
     git clone swap:patcatinside/ssh.git ~/swap/ssh
     cp -rfp ~/swap/ssh/* ~/gitconfig/
     git clone swap:patcatinside/hash.git ~/swap/hash
@@ -194,7 +193,7 @@ printf "${GREEN}======================== ¡Archivos config ssh creados! ========
 
 printf "\n${BLUE}======================== Creando conexión con Github ========================${ENDCOLOR}\n"
 conexion_shh_github_bash_catinfog
-if  [[ "$NODO" = 7 ]]; then
+if  [ "$NODO" = 7 ]; then
     conexion_shh_github_swap
 fi
 printf "${GREEN}======================== ¡Conexión con Github creada! ========================${ENDCOLOR}\n"
