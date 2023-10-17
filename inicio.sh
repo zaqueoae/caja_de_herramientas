@@ -191,7 +191,7 @@ fi
 if [ "$NODO" = 1 ]; then
   bash ~/bash/ini.sh 1
 fi
-if [ "$NODO" = 7 ]; then
+if [ "$NODO" = 8 ]; then
   bash ~/bash/ini.sh 8
 fi
 
