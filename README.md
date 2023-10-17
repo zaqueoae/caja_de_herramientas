@@ -56,17 +56,17 @@ bash ~/inicio.sh 7
 # Nodo Grafana
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 8
+bash ~/inicio.sh 9
 ```
 
 # Nodo Backups Local
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 9
+bash ~/inicio.sh 10
 ```
 
 # Local
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 10
+bash ~/inicio.sh 8
 ```
