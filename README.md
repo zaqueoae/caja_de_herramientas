@@ -14,59 +14,59 @@ bash ~/inicio.sh
 # Nodo Cental
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 1
+bash ~/inicio.sh central
 ```
 
 # Nodo Licencias
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 2
+bash ~/inicio.sh licencias
 ```
 
 # Nodo Aplicación
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 3
+bash ~/inicio.sh aplicacion
 ```
 
 # Nodo Master
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 4
+bash ~/inicio.sh master
 ```
 
 # Nodo Esclavo 1
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 5
+bash ~/inicio.sh esclavo_1
 ```
 
 # Nodo Esclavo 2
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 6
+bash ~/inicio.sh esclavo_2
 ```
 
 # Nodo swap
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 7
+bash ~/inicio.sh swap
 ```
 
 # Nodo Grafana
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 9
+bash ~/inicio.sh grafana
 ```
 
 # Nodo Backups Local
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 10
+bash ~/inicio.sh nodo_local
 ```
 
 # Local
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh 8
+bash ~/inicio.sh local
 ```
