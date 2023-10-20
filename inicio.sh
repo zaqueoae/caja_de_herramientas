@@ -65,7 +65,8 @@ config_ssh () {
 
 conexion_shh_github_bash_catinfog () {
     if ! (github-authenticated githubssh); then
-        mkdir -p .ssh/local
+        mkdir -p ~/.ssh/local
+        rm -f ~/.ssh/local/id_rsagithub
         ssh-keygen -b 4096 -t rsa -f ~/.ssh/local/id_rsagithub -q -N ""
         chmod 400 ~/.ssh/local/id_rsagithub
         chmod 644 ~/.ssh/local/id_rsagithub.pub
