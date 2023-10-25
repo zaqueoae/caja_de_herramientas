@@ -1,6 +1,6 @@
 <div align="center">
 # Caja de Herramientas
-  ![753a7f36-1858-11e7-9d6b-7a0e64fb27f7](https://github.com/zaqueoae/caja_de_herramientas/assets/20475209/465d3e48-9f8d-4d50-88d4-0b0eab11a03b)
+  <img src="https://cloud.githubusercontent.com/assets/2059754/24601246/753a7f36-1858-11e7-9d6b-7a0e64fb27f7.png" height="250px" width="250px">
 
 </div>
 ## Librerias necesarias
