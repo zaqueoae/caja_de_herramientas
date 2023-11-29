@@ -1,0 +1,101 @@
+<div class="percentage-calc">
+    <input type="number" id="priced" class="number value">
+    <input type="number" id="cost" class="number result"></span>
+    <input type="number" class="number percent">
+
+
+
+
+</div>
+
+<script>
+    // Seleccionamos todos los elementos con la clase "number".
+    const numbers = document.querySelectorAll(".number");
+
+    // Seleccionamos el elemento con la clase "result".
+    const resultText = document.querySelector(".result");
+
+
+    // Declaramos las variables "price" y "cost" fuera del bucle forEach.
+    let price, cost, margin;
+
+    // Iteramos sobre cada elemento con la clase "number".
+    // Este es un bloque de código que agrega un evento de escucha a cada elemento con la clase "number".
+    numbers.forEach((number) => {
+        // Cuando se detecta un evento de entrada, la función de devolución de llamada se ejecuta.
+        number.addEventListener("input", () => {
+            // Si el elemento de entrada tiene la clase "value", la variable "price" se establece en el valor de entrada convertido a un número con formato de punto.
+            if (number.classList.contains("value")) {
+                price = NumAPunto(parseFloat(number.value));
+            }
+            // Si el elemento de entrada tiene la clase "percent", la variable "cost" se establece en el valor de entrada convertido a un número con formato de punto.
+            if (number.classList.contains("percent")) {
+                cost = NumAPunto(parseFloat(number.value));
+            }
+
+            if (number.classList.contains("result")) {
+                margin = NumAPunto(parseFloat(number.value));
+            }
+
+            // Si tanto "price" como "cost" tienen un valor, se llama a la función "calculate" y se muestra el resultado en el elemento con la clase "result". 
+            if ((price || price == 0) && (cost || cost == 0)) {
+                const resultado_1 = calculate(price, cost);
+                const resultado = NumeroPuntoDecimalEscogido(resultado_1, ConPuntoOConComa)
+                document.getElementById("cost").value = resultado;
+            }
+            //Mira si cambio margen y costo para cambiar el precio
+            if ((margin || margin == 0) && (cost || cost == 0)) {
+                const resultado_1 = calculate_price(margin, cost);
+                const resultado = NumeroPuntoDecimalEscogido(resultado_1, ConPuntoOConComa)
+                document.getElementById("priced").value = resultado;
+            }
+
+
+
+        });
+    });
+
+    // Esta función calcula el margen de beneficio en porcentaje a partir del precio y el costo dados.
+    function calculate(price, cost) {
+        const calculoMargen = ((price - cost) / price) * 100;
+        const  numeroFormateado = calculoMargen.toFixed(2);
+        return numeroFormateado;
+    }
+
+    function calculate_price(margin, cost) {
+        const  calculoPrecio =  (cost * 100) / (100 - margin);
+        const  numeroFormateado = calculoPrecio.toFixed(2);
+        return numeroFormateado;
+    }
+
+    // Esta función convierte un número en formato de coma a un número en formato de punto.
+    function NumAPunto(x) {
+        let num = x.toString();
+        let numString = num.toString();
+        if (numString[numString.length - 3] === "," || numString[numString.length - 2] === ",") {
+            ConPuntoOConComa = 'coma';
+            let QuitoPunto = num.replace(/\./g, "");
+            ConPunto = QuitoPunto.replace(/,/g, ".");
+
+        } else if (numString[numString.length - 3] === "." || numString[numString.length - 2] === "." || numString[numString.length - 2] != "." || numString[numString.length - 3] != ".") {
+            ConPuntoOConComa = 'punto';
+            ConPunto = num.replace(/,/g, "");
+            num = parseFloat(ConPunto);
+            return num;
+        }
+    }
+    // Esta función devuelve el numero al formato original auqnue no sea operable con js
+    function NumeroPuntoDecimalEscogido(x, y) {
+        resultado = x;
+        if (ConPuntoOConComa == 'coma') {
+            num = resultado.toLocaleString('es-ES', {
+                minimumFractionDigits: 2
+            });
+        } else if (ConPuntoOConComa == 'punto') {
+            num = resultado.toLocaleString('en-US', {
+                minimumFractionDigits: 2
+            });
+        }
+        return num;
+    }
+</script>
