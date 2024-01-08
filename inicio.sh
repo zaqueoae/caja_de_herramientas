@@ -26,36 +26,12 @@ config_ssh () {
     mkdir -p ~/.ssh
     rm -f ~/.ssh/config
     touch ~/.ssh/config
-    if  [[ ! (-s  ~/.ssh/backup)  ]]
-    then 
-        touch ~/.ssh/backup
-    fi
-    if  [[ ! (-s  ~/.ssh/github)  ]]
-    then 
-        touch ~/.ssh/github
-    fi
-    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swappro)  ]]
-    then 
-        touch ~/.ssh/swappro
-    fi
-    
-    if  [[ "$NODO" = "swap" ]] && [[ ! (-s  ~/.ssh/swaptest)  ]]
-    then 
-        touch ~/.ssh/swaptest
-    fi
     
     echo 'StrictHostKeyChecking no' >> ~/.ssh/config
     echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
     echo 'ForwardAgent yes' >> ~/.ssh/config
     
-    echo 'Include backup' >> ~/.ssh/config
     echo 'Include github' >> ~/.ssh/config
-    
-    if  [[ "$NODO" = 7 ]]
-    then 
-        echo 'Include swappro' >> ~/.ssh/config
-        echo 'Include swaptest' >> ~/.ssh/config
-    fi
     
     echo 'Host *' >> ~/.ssh/config
     echo 'IdentitiesOnly=yes' >> ~/.ssh/config
@@ -113,23 +89,23 @@ conexion_shh_github_bash_catinfog () {
     fi
 }
 
-conexion_shh_github_swap () {
-    if ! (github-authenticated swap); then
-        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_swap -q -N ""
-        chmod 400 ~/.ssh/id_swap
-        chmod 644 ~/.ssh/id_swap.pub
+conexion_shh_github_hashes () {
+    if ! (github-authenticated githubhashes); then
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_githubhashes -q -N ""
+        chmod 400 ~/.ssh/id_githubhashes
+        chmod 644 ~/.ssh/id_githubhashes.pub
 
         #Añado las llaves a ssh agent
         eval "$(ssh-agent)"
-        ssh-add ~/.ssh/id_swap
-        pub=$(cat ~/.ssh/id_swap.pub)
+        ssh-add ~/.ssh/id_githubhashes
+        pub=$(cat ~/.ssh/id_githubhashes.pub)
         echo ''
         echo ''
         for (( ; ; ))
         do
             githubuser=0
             githubpass=0
-            read -r -p "Escribe tu usuario de github pra conectar con el repo de SWAP: " githubuser
+            read -r -p "Escribe tu usuario de github pra conectar con el repo de Hashes: " githubuser
             echo "Tu usuario de github es $githubuser"
             echo ''
             read -r -p "Escribe la api-key de $githubuser: " -s githubpass
@@ -138,14 +114,14 @@ conexion_shh_github_swap () {
             sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
             echo '' >> ~/.ssh/github
             echo "#$githubuser" >> ~/.ssh/github
-            echo 'Host swap' >> ~/.ssh/github
+            echo 'Host githubhashes' >> ~/.ssh/github
             echo '        User git' >> ~/.ssh/github
             echo '        HostName github.com' >> ~/.ssh/github
-            echo '        IdentityFile ~/.ssh/id_swap' >> ~/.ssh/github
+            echo '        IdentityFile ~/.ssh/id_githubhashes' >> ~/.ssh/github
             echo "#$githubuser" >> ~/.ssh/github
             echo '' >> ~/.ssh/github
 
-            if github-authenticated githubssh; then
+            if github-authenticated githubhashes; then
                 echo "Hemos conectado"
                 break
             else
@@ -159,34 +135,15 @@ conexion_shh_github_swap () {
 }
 
 clonacion_bash_catinfog () {
-rm -rf ~/swap
+rm -rf ~/bashcatinfog
 rm -rf ~/bash
-mkdir -p ~/swap
-mkdir -p ~/swap/bash
-mkdir -p ~/bash
-if [[ "$NODO" = "swap" ]]
-then
-mkdir -p ~/swap/ssh
-mkdir -p ~/swap/hash
-mkdir -p ~/gitconfig
-mkdir -p ~/hash
-fi
 
-git clone githubssh:zaqueoae/bashcatinfog.git ~/swap/bash
-cp -rfp ~/swap/bash/0-Caja_de_herramientas/* ~/bash/
+git clone githubssh:zaqueoae/bashcatinfog.git ~/bashcatinfog
 
-if [ "$NODO" = "swap" ]; then
-    git clone swap:patcatinside/ssh.git ~/swap/ssh
-    cp -rfp ~/swap/ssh/* ~/gitconfig/
-    git clone swap:patcatinside/hash.git ~/swap/hash
-    cp -rfp ~/swap/hash/* ~/hash/
-fi
-
-rm -rf ~/swap
 }
 
 execute_bash () {
-  bash ~/bash/ini.sh "$NODO"
+  bash ~/bashcatinfog/ini.sh "$NODO"
 }
 
 printf "\n${BLUE}======================== Creando los archivos config ssh ========================${ENDCOLOR}\n"
@@ -196,7 +153,7 @@ printf "${GREEN}======================== ¡Archivos config ssh creados! ========
 printf "\n${BLUE}======================== Creando conexión con Github ========================${ENDCOLOR}\n"
 conexion_shh_github_bash_catinfog
 if  [ "$NODO" = "swap" ]; then
-    conexion_shh_github_swap
+    conexion_shh_github_hashes
 fi
 printf "${GREEN}======================== ¡Conexión con Github creada! ========================${ENDCOLOR}\n"
 
