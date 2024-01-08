@@ -98,7 +98,7 @@ git clone githubssh:zaqueoae/bashcatinfog.git ~/bashcatinfog
 }
 
 execute_bash () {
-  bash ~/bashcatinfog/ini.sh "$NODO"
+  bash ~/bashcatinfog/0-Caja_de_herramientas/ini.sh "$NODO"
 }
 
 printf "\n${BLUE}======================== Creando los archivos config ssh ========================${ENDCOLOR}\n"
