@@ -89,51 +89,6 @@ conexion_shh_github_bash_catinfog () {
     fi
 }
 
-conexion_shh_github_hashes () {
-    if ! (github-authenticated githubhashes); then
-        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_githubhashes -q -N ""
-        chmod 400 ~/.ssh/id_githubhashes
-        chmod 644 ~/.ssh/id_githubhashes.pub
-
-        #Añado las llaves a ssh agent
-        eval "$(ssh-agent)"
-        ssh-add ~/.ssh/id_githubhashes
-        pub=$(cat ~/.ssh/id_githubhashes.pub)
-        echo ''
-        echo ''
-        for (( ; ; ))
-        do
-            githubuser=0
-            githubpass=0
-            read -r -p "Escribe tu usuario de github pra conectar con el repo de Hashes: " githubuser
-            echo "Tu usuario de github es $githubuser"
-            echo ''
-            read -r -p "Escribe la api-key de $githubuser: " -s githubpass
-            echo ''
-            curl -u "$githubuser:$githubpass" -X POST -d "{\"title\":\"`hostname`\",\"key\":\"$pub\"}" https://api.github.com/user/keys
-            sed -i "/#$githubuser/,/#$githubuser/d" ~/.ssh/github
-            echo '' >> ~/.ssh/github
-            echo "#$githubuser" >> ~/.ssh/github
-            echo 'Host githubhashes' >> ~/.ssh/github
-            echo '        User git' >> ~/.ssh/github
-            echo '        HostName github.com' >> ~/.ssh/github
-            echo '        IdentityFile ~/.ssh/id_githubhashes' >> ~/.ssh/github
-            echo "#$githubuser" >> ~/.ssh/github
-            echo '' >> ~/.ssh/github
-
-            if github-authenticated githubhashes; then
-                echo "Hemos conectado"
-                break
-            else
-                echo "Algo ha fallado: el nombre de usuario o el api token."
-                echo "Aquí tienes un manual para crear un api token: https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
-                read -n 1 -s -r -p "Pulsa Enter para volver a intentar conectar"
-                echo ''
-            fi
-        done
-    fi
-}
-
 clonacion_bash_catinfog () {
 rm -rf ~/bashcatinfog
 rm -rf ~/bash
