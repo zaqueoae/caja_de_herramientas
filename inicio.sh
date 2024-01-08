@@ -152,9 +152,6 @@ printf "${GREEN}======================== ¡Archivos config ssh creados! ========
 
 printf "\n${BLUE}======================== Creando conexión con Github ========================${ENDCOLOR}\n"
 conexion_shh_github_bash_catinfog
-if  [ "$NODO" = "swap" ]; then
-    conexion_shh_github_hashes
-fi
 printf "${GREEN}======================== ¡Conexión con Github creada! ========================${ENDCOLOR}\n"
 
 printf "\n${BLUE}======================== Clonando archivos bash catinfog ========================${ENDCOLOR}\n"
