@@ -58,10 +58,10 @@ curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramienta
 bash ~/inicio.sh esclavo_2 && rm -f ~/inicio.sh
 ```
 
-## Nodo swap
+## Nodo Orquestador
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh
-bash ~/inicio.sh swap && rm -f ~/inicio.sh
+bash ~/inicio.sh orquestador && rm -f ~/inicio.sh
 ```
 
 ## Nodo Grafana
