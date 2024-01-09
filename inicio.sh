@@ -41,18 +41,18 @@ config_ssh () {
 
 conexion_shh_github_bash_catinfog () {
     if ! (github-authenticated githubssh); then
-        mkdir -p ~/.ssh/local
-        rm -f ~/.ssh/local/id_rsagithub
-        ssh-keygen -b 4096 -t rsa -f ~/.ssh/local/id_rsagithub -q -N ""
-        chmod 400 ~/.ssh/local/id_rsagithub
-        chmod 644 ~/.ssh/local/id_rsagithub.pub
+        mkdir -p ~/.ssh
+        rm -f ~/.ssh/id_rsagithub
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsagithub -q -N ""
+        chmod 400 ~/.ssh/id_rsagithub
+        chmod 644 ~/.ssh/id_rsagithub.pub
         
         
         
         #Añado las llaves a ssh agent
         eval "$(ssh-agent)"
-        ssh-add ~/.ssh/local/id_rsagithub
-        pub=$(cat ~/.ssh/local/id_rsagithub.pub)
+        ssh-add ~/.ssh/id_rsagithub
+        pub=$(cat ~/.ssh/id_rsagithub.pub)
         echo ''
         echo ''
         for (( ; ; ))
@@ -72,7 +72,7 @@ conexion_shh_github_bash_catinfog () {
             echo 'Host githubssh' >> ~/.ssh/github
             echo '        User git' >> ~/.ssh/github
             echo '        HostName github.com' >> ~/.ssh/github
-            echo '        IdentityFile ~/.ssh/local/id_rsagithub' >> ~/.ssh/github
+            echo '        IdentityFile ~/.ssh/id_rsagithub' >> ~/.ssh/github
             echo "#$githubuser" >> ~/.ssh/github
             echo '' >> ~/.ssh/github
             
