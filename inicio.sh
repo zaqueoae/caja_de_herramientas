@@ -26,6 +26,7 @@ config_ssh () {
     mkdir -p ~/.ssh
     rm -f ~/.ssh/config
     touch ~/.ssh/config
+    touch ~/.ssh/github
     
     echo 'StrictHostKeyChecking no' >> ~/.ssh/config
     echo 'XAuthLocation /opt/X11/bin/xauth' >> ~/.ssh/config
