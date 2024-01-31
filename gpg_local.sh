@@ -42,11 +42,6 @@ gpg --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 
-subkey_id=$(gpg --list-secret-keys --with-colons "$email" | awk -F: '/sub:/ {print $5; exit}')
-gpg --export-secret-subkeys "$subkey_id" > llaves_backup/subkey.gpg
-
-gpg --list-secret-keys
-
 unset GNUPGHOME
 rm -r $tempdir
 cat << EOF
