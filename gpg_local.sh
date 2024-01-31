@@ -18,7 +18,6 @@ email=info@catinfog.com
 nombre="Zaqueo Echeverria"
 
 gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
-rm -rf .gnupg/* 
 gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 
 gpg --generate-key --batch <<eoGpgConf
