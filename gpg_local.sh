@@ -44,7 +44,3 @@ gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 unset GNUPGHOME
 rm -r $tempdir
-cat << EOF
-    Subkey-Type: RSA
-    Subkey-Usage: sign
-EOF
