@@ -1,8 +1,28 @@
 #!/bin/bash
+
+# Explicación:
+# 
+# Este script genera una llave privada y 3 subclaves.
+# 
+# La llave principal tiene una passphrasse diferente a las subclaves.
+# 
+# Exporto la llave privada principal, la llave pública y las 3 subclaves a archivos.
+# 
+# Anoto las passphrasse en 2 archivos txt.
+# 
+# Importo la llave publica a un servidor publico.
+# 
+# Para hacer todo esto uso directorios temporales, asi que cuando termino no queda rastro de los anillos ni he perturbado el anillo por defecto.
+
+
 #######################################################
 #Variables gpg. Modifica esto a tu gusto
 email="info@pacopepe3242335.com"
 nombre="Paco Pepe"
+tag="Viva Cristo Rey"
+lenghtkey="4096"
+typekey="RSA"
+expiregpg="9999-12-31"
 #######################################################
 
 # Crear un directorio temporal
@@ -29,12 +49,12 @@ gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 
 #Creo la llave privada
 gpg --generate-key --batch <<eoGpgConf
-    Key-Type: RSA
-    Key-Length: 4096
+    Key-Type: "$typekey"
+    Key-Length: "$lenghtkey"
     Name-Real: "$nombre"
-    Name-Comment: Viva Cristo Rey
+    Name-Comment: "$tag"
     Name-Email: "$email"
-    Expire-Date: 9999-12-31
+    Expire-Date: "$expiregpg"
     Passphrase: $(<llaves_backup/passwd.txt)
     %commit
 eoGpgConf
@@ -54,6 +74,7 @@ gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 #Obtengo la huella de la llave privada
 FPR=$(gpg --list-options show-only-fpr-mbox --list-secret-keys | awk '{print $1}')
 
+#Genero las 3 subclaves a la llave privada a partir de la huella de la llave privada
 gpg --batch --passphrase '' \
     --quick-add-key $FPR RSA sign 100y
 gpg --batch --passphrase '' \
