@@ -36,11 +36,11 @@ gpg --generate-key --batch <<eoGpgConf
     %echo Done.
 eoGpgConf
 
-gpg --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
+gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
 
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
-gpg --keyserver keyserver.ubuntu.com --send-keys "$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)"
+#gpg --keyserver keyserver.ubuntu.com --send-keys "$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)"
 
 unset GNUPGHOME
 rm -r $tempdir
