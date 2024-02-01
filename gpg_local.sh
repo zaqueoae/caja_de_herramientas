@@ -53,9 +53,6 @@ eoGpgConf
 #Obtengo el id de la llave privada
 keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
-#Firmo la llave publica
-gpg --sign-key "$keyid"
-
 #Exporto la llave privada y las subclaves para guardarlas a buen recaudo
 gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
 
