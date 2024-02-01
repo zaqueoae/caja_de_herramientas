@@ -94,15 +94,20 @@ gpg --batch --passphrase "$passphrasse" \
 #Exporto las subclaves para importarlas a un nuevo directorio temporal, cambiar la passphrasse y finalmente exportar esas subclaves
 ##########################
 
-# Crea un directorio temporal para el nuevo anillo de claves
-tempdir2=$(mktemp -d)
-
 # Exporta las subclaves
 gpg --export-secret-subkeys "$keyid"! >llaves_backup/subkeys.pgp
 
-# Importa las subclaves al nuevo anillo de claves
+# Crea un directorio temporal para el nuevo anillo de claves
+tempdir2=$(mktemp -d)
+
+#Entro en el nuevo anillo
 export GNUPGHOME=$tempdir2
+
+# Importo las subclaves al nuevo anillo de claves
 gpg --import llaves_backup/subkeys.pgp
+
+#Obtengo el id de las llaves
+keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
 # Cambio la frase de contraseña de las subclaves
 echo "$passphrasse_subkeys" | gpg --command-fd 0 --edit-key "$keyid"
@@ -110,11 +115,12 @@ echo "$passphrasse_subkeys" | gpg --command-fd 0 --edit-key "$keyid"
 # Exporto las subclaves
 gpg --export-secret-subkeys "$keyid"! >llaves_backup/new_subkeys.pgp
 
+#Vuelvo al directorio gpg anterior
+export GNUPGHOME=$tempdir
+
 # Elimina el directorio temporal y vuelve al directorio original
 rm -rf $tempdir2
 
-#Vuelvo al directorio gpg anterior
-export GNUPGHOME=$tempdir
 ##########################
 #Fin exportación de subclaves
 ##########################
