@@ -49,30 +49,37 @@ gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 
 #Creo la llave privada
 gpg --generate-key --batch <<eoGpgConf
-    Key-Type: "$typekey"
-    Key-Length: "$lenghtkey"
-    Name-Real: "$nombre"
-    Name-Comment: "$tag"
-    Name-Email: "$email"
-    Expire-Date: "$expiregpg"
+    Key-Type: $typekey
+    Key-Length: $lenghtkey
+    Name-Real: $nombre
+    Name-Comment: $tag
+    Name-Email: $email
+    Expire-Date: $expiregpg
     Passphrase: $(<llaves_backup/passwd.txt)
     %commit
 eoGpgConf
 
+echo "LLave privada generada"
+
 #Obtengo el id de la llave privada
 keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+
+echo "voy a exportar la llave privada"
 
 #Exporto la llave privada
 gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
 
+echo "voy a exportar la llave publica"
 #Exporto la llave pública
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 #Envío la llave publica a un servidor publico
 #gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 
+echo "voy a obtener la huella digital"
+
 #Obtengo la huella de la llave privada
-FPR=$(gpg --list-secret-keys --with-fingerprint | grep "Key fingerprint =" | head -n 1 | awk '{print $4$5$6$7$8$9$10$11$12$13}')
+FPR=$(gpg --fingerprint "$keyid" | sed -n '/^\s/s/\s*//p')
 
 #Genero las 3 subclaves a la llave privada a partir de la huella de la llave privada
 gpg --batch --passphrase "$passphrasse" \
