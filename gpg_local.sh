@@ -56,14 +56,52 @@ keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2
 #Firmo la llave publica
 gpg --sign-key "$keyid"
 
-#Exporto la llave privada
+#Exporto la llave privada y las subclaves para guardarlas a buen recaudo
 gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
+
+#Elimino de forma individual la llave privada con el objetivo de que solo queden las subclaves y exportarlas de forma individual
+keygrip=$(gpg2 --with-keygrip --list-key YOURPRIMARYKEYID | grep Keygrip | head -n 1 | awk '{print $3}')
+rm $GNUPGHOME/.gnupg/private-keys-v1.d/${keygrip}.key
+
+
+#Ahora exporto cada una de las 3 llaves de forma individual.
+keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+# Obtenemos las líneas que contienen información de subclaves
+subkey_lines=$(gpg --list-keys $keyid | awk '/sub/')
+
+while IFS= read -r line; do
+    # Extraemos el ID de la subclave y su uso
+    subkeyid=$(echo $line | awk '{print $2}' | cut -d'/' -f2)
+    usage=$(echo $line | awk '{print $1}')
+
+    # Determinamos el nombre del archivo basado en el uso de la subclave
+    filename=""
+    case $usage in
+        "ssb")
+            filename="sign"
+            ;;
+        "ssb>u")
+            filename="auth"
+            ;;
+        "ssb/e")
+            filename="encrypt"
+            ;;
+        *)
+            filename=$subkeyid  # si no podemos determinar el uso, usamos el ID de la subclave
+            ;;
+    esac
+
+    # Exportamos la subclave
+    gpg --export-secret-subkeys $subkeyid > subkey_${filename}.pgp
+done <<< "$subkey_lines"
+
+
 
 #Exporto la llave pública
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 #Envío la llave publica a un servidor publico
-gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
+#gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 
 #Paro la generación de entropía
 pidrngd=$(pgrep rngd)
