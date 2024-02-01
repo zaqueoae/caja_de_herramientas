@@ -56,13 +56,7 @@ keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2
 #Exporto la llave privada y las subclaves para guardarlas a buen recaudo
 gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
 
-#Elimino de forma individual la llave privada con el objetivo de que solo queden las subclaves y exportarlas de forma individual
-keygrip=$(gpg2 --with-keygrip --list-key YOURPRIMARYKEYID | grep Keygrip | head -n 1 | awk '{print $3}')
-rm $GNUPGHOME/.gnupg/private-keys-v1.d/${keygrip}.key
 
-
-#Ahora exporto cada una de las 3 llaves de forma individual.
-keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 # Obtenemos las líneas que contienen información de subclaves
 subkey_lines=$(gpg --list-keys $keyid | awk '/sub/')
 
@@ -89,7 +83,7 @@ while IFS= read -r line; do
     esac
 
     # Exportamos la subclave
-    gpg --export-secret-subkeys $subkeyid > subkey_${filename}.pgp
+    gpg --output llaves_backup/subkey_${filename}.pgp --export-secret-subkeys ${subkeyid}!
 done <<< "$subkey_lines"
 
 
