@@ -1,8 +1,8 @@
 #!/bin/bash
 #######################################################
 #Variables gpg. Modifica esto a tu gusto
-email="info@catinfog.com"
-nombre="Zaqueo Echeverria"
+email="info@pacopepe3242335.com"
+nombre="Paco Pepe"
 #######################################################
 
 # Crear un directorio temporal
