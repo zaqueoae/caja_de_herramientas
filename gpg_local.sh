@@ -75,11 +75,11 @@ gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 FPR=$(gpg --list-options show-only-fpr-mbox --list-secret-keys | awk '{print $1}')
 
 #Genero las 3 subclaves a la llave privada a partir de la huella de la llave privada
-gpg --batch --passphrase '' \
+gpg --batch --passphrase "$passphrasse" \
     --quick-add-key $FPR RSA sign 100y
-gpg --batch --passphrase '' \
+gpg --batch --passphrase "$passphrasse" \
     --quick-add-key $FPR RSA encrypt 100y
-gpg --batch --passphrase '' \
+gpg --batch --passphrase "$passphrasse" \
     --quick-add-key $FPR RSA auth 100y
 
 
@@ -112,6 +112,10 @@ export GNUPGHOME=$tempdir
 #Fin exportación de subclaves
 ##########################
 
+#Me cargo las variables con contenido sensible
+unset passphrase
+unset FPR
+unset passphrasse_subkeys
 
 #Paro la generación de entropía
 pidrngd=$(pgrep rngd)
