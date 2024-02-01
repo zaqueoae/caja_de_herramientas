@@ -2,7 +2,7 @@
 
 # Explicación:
 # 
-# Este script genera una llave privada y 3 subclaves.
+# Este script genera con gpg una llave privada y 3 subclaves.
 # 
 # La llave principal tiene una passphrasse diferente a las subclaves.
 # 
