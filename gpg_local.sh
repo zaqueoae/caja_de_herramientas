@@ -65,7 +65,7 @@ gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --outpu
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 #Envío la llave publica a un servidor publico
-#gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
+gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 
 
 
