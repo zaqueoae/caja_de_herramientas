@@ -2,17 +2,15 @@
 
 # Explicación:
 # 
-# Este script genera con gpg una llave privada y 3 subclaves.
+# Este script genera de forma desatendida con gpg una llave privada y 3 subclaves.
 # 
-# La llave principal tiene una passphrase diferente a las subclaves.
+# Exporto la llave privada principal, la llave pública y las 3 subclaves a archivos independientes.
 # 
-# Exporto la llave privada principal, la llave pública y las 3 subclaves a archivos.
-# 
-# Anoto las passphrase en 2 archivos txt.
+# Anoto la passphrase en 1 archivo txt.
 # 
 # Importo la llave publica a un servidor publico.
 # 
-# Para hacer todo esto uso directorios temporales, asi que cuando termino no queda rastro de los anillos ni he perturbado el anillo por defecto.
+# Para hacer todo esto uso directorios temporales, asi que cuando termino no queda rastro. Solo quedan los archivos exportados.
 
 
 #######################################################
