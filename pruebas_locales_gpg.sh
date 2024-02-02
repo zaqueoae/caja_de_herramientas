@@ -33,6 +33,15 @@ comprobacion_autenticidad_llave_publica(){
 # Fin Funciones
 ############################
 
+echo ""
+echo "Ahora voy a comprobar que todo va bien."
+echo "Voy a probar que la llave publica descarga bien y es la que yo he importado."
+echo "Voy a probar que firmo y verifico la firma correctamente."
+echo "Voy a probar que encripto y desencripto correctamente."
+echo "Voy a dejar las pruebas en la carpeta test_llaves/"
+echo "Allá voy"
+echo ""
+
 
 #Mato al fpf agent
 gpgconf --kill gpg-agent 
