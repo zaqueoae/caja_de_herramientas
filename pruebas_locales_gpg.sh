@@ -1,5 +1,41 @@
 #!/bin/bash
 
+############################
+# Funciones
+############################
+# Funcion que comprueba si la llave publica descargada es autentica
+# Ejemplo: comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_sign.pgp
+comprobacion_autenticidad_llave_publica(){
+    passphrase="$1"
+    email="$2"
+    path_llave_privada="$3"
+
+    #Importo la subkey de firma
+    echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import "$path_llave_privada"
+
+    #Obtengo la huella de la subkey
+    huella_privada=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
+
+    #Borro la subkey
+    gpg --delete-secret-keys "$email"
+
+    #Me descargo la llave pública
+    gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
+
+    #Saco la huella de la llave publica
+    huella_publica=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
+
+    # Compara las huellas digitales
+    if [ ! "$huella_publica" = "$huella_privada" ]; then
+        echo "La clave pública no es auténtica"
+        exit
+    fi
+}
+############################
+# Fin Funciones
+############################
+
+
 #Mato al fpf agent
 gpgconf --kill gpg-agent 
 #MAto los procesos de gpgagent
@@ -27,38 +63,16 @@ file_test="test_llaves/texto.txt"
 gpgconf --kill gpg-agent
 
 
-#########################################################
-#PRUEBA 1: Firma
-#########################################################
+#################
+# Comprobación de la llave de firma
+#################
+
 # Creo un directorio temporal
 tempdir4=$(mktemp -d)
 
 # Configuo GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME="$tempdir4"
-
-#Importo la subkey de firma
-echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_sign.pgp
-
-#Saco la huella de la subkey
-huella_privada=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
-
-#Borro la subkey
-gpg --delete-secret-keys "$email"
-
-#Me descargo la llave pública
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
-#gpg --keyserver hkps://keyserver.ubuntu.com --with-colons --search-keys "$email"
-
-#Saco la huella de la llave publica
-huella_publica=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
-
-# Compara las huellas digitales
-if [ ! "$huella_publica" = "$huella_privada" ]; then
-    echo "La clave pública no es auténtica"
-    exit
-else
-    echo "La llave publica es auténtica"
-fi
+comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_sign.pgp
 
 #Importo de nuevo la subkey de firma
 echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_sign.pgp
@@ -79,59 +93,49 @@ if [ "$compruebo" -eq 0 ]; then
     sign_test=0
 else
     echo "La verificación de la firma falló."
-    sign_test=1
-fi
-
-#########################################################
-#PRUEBA 2: Encriptado Desencriptado
-#########################################################
-# Creo un directorio temporal
-tempdir5=$(mktemp -d)
-
-# Configuo GNUPGHOME para apuntar al directorio temporal
-export GNUPGHOME="$tempdir5"
-
-#Me descargo la llave pública
-gpg --keyserver keyserver.ubuntu.com --trust-model always --recv-keys "$email"
-
-#Obtengo el id la llave publica
-publickeyid=$(gpg --list-keys "$email" | awk '/pub/{print $2}' | awk -F'/' '{print $2}')
-
-# Obtengo la huella digital de la clave pública
-public_key_fingerprint=$(gpg --fingerprint "$publickeyid" | grep -i fingerprint | awk '{print $2 $3 $4 $5 $6}')
-
-#Importo la subkey de encriptado
-echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_encrypt.pgp
-
-#Obtengo la huella digital de la subkey
-subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
-
-# Compara las huellas digitales
-if [ ! "$public_key_fingerprint" = "$subkey_fingerprint" ]; then
-    echo "La clave pública no es auténtica"
     exit
 fi
 
-#Encripto
+
+
+
+#################
+# Comprobación de la llave de cifrado
+#################
+
+# Creo un directorio temporal
+tempdir5=$(mktemp -d)
+# Configuo GNUPGHOME para apuntar al directorio temporal
+export GNUPGHOME="$tempdir5"
+comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_encrypt.pgp
+
+#Importo de nuevo la subkey de cifrado
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_encrypt.pgp
+
+#Obtengo el id de la subkey de cifrado
+subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+
+#Cifro
 gpg --yes --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
 
 #Obtengo el id de la subkey de encriptado
 subkeyid=$(gpg --list-secret-keys "$email" | awk '/ssb/{print $2}' | cut -d'/' -f2)
 
 #Desencripto
-echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user "$subkeyid" --output "${file_test}_encrypt.gpg" --decrypt "$file_test"_decrypt.txt
+echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user "$subkeyid" --output "${file_test}_encrypt.gpg" --decrypt "$file_test"_decrypt.txt
 
 #Compruebo que le desencriptado ha ido bien
 filenoencrypt="$(<test_llaves/texto.txt)"
-filedecrypt="$file_test"_decrypt.txt
+filedecrypt="$(<$file_test_decrypt.txt)"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
-    echo "El encriptado desencriptado ha funcionado."
+    echo "El encriptado y desencriptado SI ha funcionado."
     encrypt_test=0
 else
-    echo "El encriptado desencriptado NO funcionado."
-    encrypt_test=1
+    echo "El encriptado desencriptado NO ha funcionado."
+    exit
 fi
+
 
 
 #########################################################
