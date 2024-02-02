@@ -57,6 +57,9 @@ gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --outpu
 #Exporto la llave pública
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
+#Obtengo el id de la llave privada
+keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+
 #Envío la llave publica a un servidor publico
 gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 
@@ -70,8 +73,6 @@ gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 ########################################################################################
 
 #Primero la subkey de firmas
-#Obtengo el id de la llave privada
-keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 #Averiguo la huella de la llave privada
 FPR=$(gpg --fingerprint "$keyid" | sed -n '/^\s/s/\s*//p')
 #Genero la subkey
