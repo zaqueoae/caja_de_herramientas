@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#Mato al fpf agent
+gpgconf --kill gpg-agent 
+#MAto los procesos de gpgagent
+pkill gpg-agent
+
+
 unset GNUPGHOME
 rm -rf "$tempdir4"
 rm -rf "$tempdir5"
@@ -131,7 +137,6 @@ fi
 #########################################################
 #PRUEBA 3: Autenticado
 #########################################################
-# Creo un directorio temporal
 #No conozco una forma de testear una llave de authenticación offline. Pero si el test de firmado y de encriptado han ido bien, supondré que la subkey de autenticación es correcta.
 
 #Conclusión
@@ -146,3 +151,9 @@ fi
 unset GNUPGHOME
 rm -r "$tempdir4"
 rm -r "$tempdir5"
+
+#Mato al fpf agent
+gpgconf --kill gpg-agent 
+#MAto los procesos de gpgagent
+pkill gpg-agent
+
