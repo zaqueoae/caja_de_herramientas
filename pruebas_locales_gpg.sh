@@ -17,7 +17,8 @@ comprobacion_autenticidad_llave_publica(){
     huella_privada=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
 
     #Borro la subkey
-    gpg --delete-secret-keys "$email"
+    gpg --batch --yes --delete-secret-and-public-key "$huella_privada"
+    #gpg --delete-secret-keys "$email"
 
     #Me descargo la llave pública
     gpg --keyserver hkps://keyserver.ubuntu.com --with-colons --search-keys "$email"
@@ -117,17 +118,17 @@ echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/su
 subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
 #Cifro
-gpg --yes --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
+gpg --trust-model always --yes --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
 
 #Obtengo el id de la subkey de encriptado
-subkeyid=$(gpg --list-secret-keys "$email" | awk '/ssb/{print $2}' | cut -d'/' -f2)
+subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
 #Desencripto
-echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user "$subkeyid" --output "${file_test}_encrypt.gpg" --decrypt "$file_test"_decrypt.txt
+echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user ${subkeyid} --output ${file_test}_decrypt.txt --decrypt ${file_test}_encrypt.gpg
 
 #Compruebo que le desencriptado ha ido bien
 filenoencrypt="$(<test_llaves/texto.txt)"
-filedecrypt="$(<$file_test_decrypt.txt)"
+filedecrypt="$(<${file_test}_decrypt.txt)"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
     echo "El encriptado y desencriptado SI ha funcionado."
