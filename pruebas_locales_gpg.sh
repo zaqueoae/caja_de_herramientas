@@ -27,10 +27,25 @@ tempdir4=$(mktemp -d)
 export GNUPGHOME="$tempdir4"
 
 #Me descargo la llave pública
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
+gpg --keyserver keyserver.ubuntu.com --trust-model always --recv-keys "$email"
+
+#Obtengo el id la llave publica
+publickeyid=$(gpg --list-keys "$email" | awk '/pub/{print $2}' | awk -F'/' '{print $2}')
+
+# Obtengo la huella digital de la clave pública
+public_key_fingerprint=$(gpg --fingerprint "$publickeyid" | grep -i fingerprint | awk '{print $2 $3 $4 $5 $6}')
 
 #Importo la subkey de firma
-gpg --import llaves_backup/subkey_sign.pgp
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_sign.pgp
+
+#Obtengo la huella digital de la subkey
+subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
+
+# Compara las huellas digitales
+if [ ! "$public_key_fingerprint" = "$subkey_fingerprint" ]; then
+    echo "La clave pública no es auténtica"
+    exit
+fi
 
 #Obtengo el id de la subkey de firma
 subkeyid=$(gpg --list-secret-keys "$email" | awk '/ssb/{print $2}' | cut -d'/' -f2)
@@ -61,13 +76,28 @@ tempdir5=$(mktemp -d)
 export GNUPGHOME="$tempdir5"
 
 #Me descargo la llave pública
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
+gpg --keyserver keyserver.ubuntu.com --trust-model always --recv-keys "$email"
+
+#Obtengo el id la llave publica
+publickeyid=$(gpg --list-keys "$email" | awk '/pub/{print $2}' | awk -F'/' '{print $2}')
+
+# Obtengo la huella digital de la clave pública
+public_key_fingerprint=$(gpg --fingerprint "$publickeyid" | grep -i fingerprint | awk '{print $2 $3 $4 $5 $6}')
 
 #Importo la subkey de encriptado
-gpg --import llaves_backup/subkey_encrypt.pgp
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_encrypt.pgp
+
+#Obtengo la huella digital de la subkey
+subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
+
+# Compara las huellas digitales
+if [ ! "$public_key_fingerprint" = "$subkey_fingerprint" ]; then
+    echo "La clave pública no es auténtica"
+    exit
+fi
 
 #Encripto
-gpg --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
+gpg --yes --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
 
 #Obtengo el id de la subkey de encriptado
 subkeyid=$(gpg --list-secret-keys "$email" | awk '/ssb/{print $2}' | cut -d'/' -f2)
