@@ -4,11 +4,11 @@
 # 
 # Este script genera con gpg una llave privada y 3 subclaves.
 # 
-# La llave principal tiene una passphrasse diferente a las subclaves.
+# La llave principal tiene una passphrase diferente a las subclaves.
 # 
 # Exporto la llave privada principal, la llave pública y las 3 subclaves a archivos.
 # 
-# Anoto las passphrasse en 2 archivos txt.
+# Anoto las passphrase en 2 archivos txt.
 # 
 # Importo la llave publica a un servidor publico.
 # 
@@ -35,10 +35,8 @@ export GNUPGHOME=$tempdir
 mkdir -p llaves_backup
 rm -f llaves_backup/passwd.txt
 touch llaves_backup/passwd.txt
-passphrasse=$(openssl rand -base64 24)
-echo "$passphrasse" >> llaves_backup/passwd.txt
-passphrasse_subkeys=$(openssl rand -base64 24)
-echo "$passphrasse_subkeys" >> llaves_backup/passwd_subkeys.txt
+passphrase=$(openssl rand -base64 24)
+echo "$passphrase" >> llaves_backup/passwd.txt
 
 #Genero entropía
 sudo rngd -r /dev/urandom
@@ -59,76 +57,77 @@ gpg --generate-key --batch <<eoGpgConf
     %commit
 eoGpgConf
 
-echo "LLave privada generada"
-
-#Obtengo el id de la llave privada
-keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
-
-echo "voy a exportar la llave privada"
 
 #Exporto la llave privada
 gpg --pinentry-mode loopback --passphrase "$(<llaves_backup/passwd.txt)" --output llaves_backup/privatekey.gpg --armor --export-secret-keys --export-options export-backup "$email"
 
-echo "voy a exportar la llave publica"
 #Exporto la llave pública
 gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 
 #Envío la llave publica a un servidor publico
 #gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
 
-echo "voy a obtener la huella digital"
 
-#Obtengo la huella de la llave privada
+
+
+
+########################################################################################
+#Subclaves
+#Genero las 3 subclaves
+########################################################################################
+
+#Primero la subkey de firmas
+#Obtengo el id de la llave privada
+keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+#Averiguo la huella de la llave privada
 FPR=$(gpg --fingerprint "$keyid" | sed -n '/^\s/s/\s*//p')
+#Genero la subkey
+gpg --pinentry-mode loopback --batch --passphrase "$passphrase" --quick-add-key "$FPR" rsa4096 sign 1y
+#Averiguo la huella de la subclave
+subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
+#Exporto la llave
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --export-secret-subkeys "$subkey_fingerprint"! > llaves_backup/subkey_sign.pgp
 
-#Genero las 3 subclaves a la llave privada a partir de la huella de la llave privada
-gpg --batch --passphrase "$passphrasse" \
-    --quick-add-key $FPR RSA sign 100y
-gpg --batch --passphrase "$passphrasse" \
-    --quick-add-key $FPR RSA encrypt 100y
-gpg --batch --passphrase "$passphrasse" \
-    --quick-add-key $FPR RSA auth 100y
-
-
-##########################
-#Exporto las subclaves para importarlas a un nuevo directorio temporal, cambiar la passphrasse y finalmente exportar esas subclaves
-##########################
-
-# Exporta las subclaves
-gpg --export-secret-subkeys "$keyid"! >llaves_backup/subkeys.pgp
-
-# Crea un directorio temporal para el nuevo anillo de claves
+#Ahora voy a por la subkey de encriptado
 tempdir2=$(mktemp -d)
-
-#Entro en el nuevo anillo
+# Configurar GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME=$tempdir2
 
-# Importo las subclaves al nuevo anillo de claves
-gpg --import llaves_backup/subkeys.pgp
-
-#Obtengo el id de las llaves
+#Importo de nuevo la llave principal
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/privatekey.gpg
+#Obtengo el id de la llave privada
 keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+#Averiguo la huella de la llave principal
+FPR=$(gpg --fingerprint "$keyid" | sed -n '/^\s/s/\s*//p')
+#Genero la subkey
+gpg --pinentry-mode loopback --batch --passphrase "$passphrase" --quick-add-key "$FPR" rsa4096 encr 1y
+#Averiguo la huella de la subclave
+subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
+#Exporto la subkey
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --export-secret-subkeys "$subkey_fingerprint"! > llaves_backup/subkey_encrypt.pgp
 
-# Cambio la frase de contraseña de las subclaves
-echo "$passphrasse_subkeys" | gpg --command-fd 0 --edit-key "$keyid"
 
-# Exporto las subclaves
-gpg --export-secret-subkeys "$keyid"! >llaves_backup/new_subkeys.pgp
+tempdir3=$(mktemp -d)
+# Configurar GNUPGHOME para apuntar al directorio temporal
+export GNUPGHOME=$tempdir3
 
-#Vuelvo al directorio gpg anterior
-export GNUPGHOME=$tempdir
-
-# Elimina el directorio temporal y vuelve al directorio original
-rm -rf $tempdir2
-
-##########################
-#Fin exportación de subclaves
-##########################
+#Ahora voy a por la subkey de autenticado
+#Importo de nuevo la llave principal
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/privatekey.gpg
+#Obtengo el id de la llave privada
+keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+#Obtengo la huella de la llave privada
+FPR=$(gpg --fingerprint "$keyid" | sed -n '/^\s/s/\s*//p')
+#Genero la subkey
+gpg --pinentry-mode loopback --batch --passphrase "$passphrase" --quick-add-key "$FPR" rsa4096 auth 1y
+#Averiguo la huella de la subclave
+subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/sub/{getline; print}' | tail -1 | sed 's/ //g')
+#Exporto la subkey
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --export-secret-subkeys "$subkey_fingerprint"! > llaves_backup/subkey_auth.pgp
 
 #Me cargo las variables con contenido sensible
 unset passphrase
 unset FPR
-unset passphrasse_subkeys
 
 #Paro la generación de entropía
 pidrngd=$(pgrep rngd)
@@ -137,3 +136,6 @@ sudo kill -9 "$pidrngd"
 #borro el directorio de gpg temporal y vuelvo a colocar el principal
 unset GNUPGHOME
 rm -r $tempdir
+rm -r $tempdir2
+rm -r $tempdir3
+
