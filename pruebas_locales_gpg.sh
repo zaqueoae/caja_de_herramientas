@@ -10,6 +10,8 @@ passphrase="$(<llaves_backup/passwd.txt)"
 rm -rf test_llaves
 mkdir -p test_llaves
 echo "Ave María Purísima" >> test_llaves/texto.txt
+file_test="test_llaves/texto.txt"
+
 
 #Reinicio el agente gpg
 gpgconf --kill gpg-agent
@@ -57,14 +59,29 @@ tempdir5=$(mktemp -d)
 export GNUPGHOME="$tempdir5"
 
 #Me descargo la llave pública
+gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
 
 #Importo la subkey de encriptado
+gpg --import llaves_backup/subkey_encrypt.pgp
 
 #Encripto
+gpg --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
+
+#Obtengo el id de la subkey de encriptado
+subkeyid=$(gpg --list-secret-keys "$email" | awk '/ssb/{print $2}' | cut -d'/' -f2)
 
 #Desencripto
+echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user "$subkeyid" --output "${file_test}_encrypt.gpg" --decrypt "$file_test"_decrypt.txt
 
 #Compruebo que le desencriptado ha ido bien
+filenoencrypt="$(<test_llaves/texto.txt)"
+filedecrypt="$file_test"_decrypt.txt
+
+if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
+    echo "El encriptado desencriptado ha funcionado."
+else
+    echo "El encriptado desencriptado NO funcionado."
+fi
 
 
 #########################################################
