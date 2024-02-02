@@ -13,8 +13,8 @@
 # To do all this I use temporary directories, so when I'm done there is no trace left. Only the exported files remain.
 
 
-################################################## #####
-#gpg variables. Modify this to your liking
+#######################################################
+#gpg variables. Modify this
 email="info@pacopepe3242335.com"
 nombre="Paco Pepe"
 tag="Viva Cristo Rey"
