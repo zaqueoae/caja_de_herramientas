@@ -29,10 +29,8 @@ tempdir=$(mktemp -d)
 # Configurar GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME=$tempdir
 
-
+rm -rf llaves_backup
 mkdir -p llaves_backup
-rm -f llaves_backup/passwd.txt
-touch llaves_backup/passwd.txt
 passphrase=$(openssl rand -base64 24)
 echo "$passphrase" >> llaves_backup/passwd.txt
 
