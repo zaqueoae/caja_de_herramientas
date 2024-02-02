@@ -16,10 +16,6 @@ comprobacion_autenticidad_llave_publica(){
     #Obtengo la huella de la subkey
     huella_privada=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
 
-    #Borro la subkey
-    gpg --batch --yes --delete-secret-and-public-key "$huella_privada"
-    #gpg --delete-secret-keys "$email"
-
     #Me descargo la llave pública
     gpg --keyserver hkps://keyserver.ubuntu.com --with-colons --search-keys "$email"
     #gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
@@ -76,9 +72,6 @@ tempdir4=$(mktemp -d)
 export GNUPGHOME="$tempdir4"
 comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_sign.pgp
 
-#Importo de nuevo la subkey de firma
-echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_sign.pgp
-
 #Obtengo el id de la subkey de firma
 subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
@@ -110,9 +103,6 @@ tempdir5=$(mktemp -d)
 # Configuo GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME="$tempdir5"
 comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_encrypt.pgp
-
-#Importo de nuevo la subkey de cifrado
-echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_encrypt.pgp
 
 #Obtengo el id de la subkey de cifrado
 subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
