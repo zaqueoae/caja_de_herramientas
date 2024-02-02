@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# Explicación:
-# 
-# Este script genera de forma desatendida con gpg una llave privada y 3 subclaves.
-# 
-# Exporto la llave privada principal, la llave pública y las 3 subclaves a archivos independientes.
-# 
-# Anoto la passphrase en 1 archivo txt.
-# 
-# Importo la llave publica a un servidor publico.
-# 
-# Para hacer todo esto uso directorios temporales, asi que cuando termino no queda rastro. Solo quedan los archivos exportados.
+# Explanation:
+#
+# This script generates unattended with gpg a private key and 3 subkeys.
+#
+# I export the main private key, the public key and the 3 subkeys to separate files.
+#
+# I write down the passphrase in 1 txt file.
+#
+# Import the public key to a public server.
+#
+# To do all this I use temporary directories, so when I'm done there is no trace left. Only the exported files remain.
 
 
-#######################################################
-#Variables gpg. Modifica esto a tu gusto
+################################################## #####
+#gpg variables. Modify this to your liking
 email="info@pacopepe3242335.com"
 nombre="Paco Pepe"
 tag="Viva Cristo Rey"
