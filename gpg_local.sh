@@ -127,6 +127,9 @@ unset FPR
 pidrngd=$(pgrep rngd)
 sudo kill -9 "$pidrngd"
 
+#Mato al fpf agent
+gpgconf --kill gpg-agent 
+
 #borro el directorio de gpg temporal y vuelvo a colocar el principal
 unset GNUPGHOME
 rm -r $tempdir
