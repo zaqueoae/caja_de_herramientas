@@ -20,7 +20,8 @@ comprobacion_autenticidad_llave_publica(){
     gpg --delete-secret-keys "$email"
 
     #Me descargo la llave pública
-    gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
+    gpg --keyserver hkps://keyserver.ubuntu.com --with-colons --search-keys "$email"
+    #gpg --keyserver keyserver.ubuntu.com --recv-keys "$email"
 
     #Saco la huella de la llave publica
     huella_publica=$(gpg --fingerprint --with-colons "$email" | awk -F: '/fpr/{print $10}' | tr -d ' ')
