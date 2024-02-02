@@ -129,6 +129,8 @@ sudo kill -9 "$pidrngd"
 
 #Mato al fpf agent
 gpgconf --kill gpg-agent 
+#MAto los procesos de gpgagent
+pkill gpg-agent
 
 #borro el directorio de gpg temporal y vuelvo a colocar el principal
 unset GNUPGHOME
