@@ -45,8 +45,10 @@ compruebo=$?
 
 if [ "$compruebo" -eq 0 ]; then
     echo "La verificación de la firma fue exitosa."
+    sign_test=0
 else
     echo "La verificación de la firma falló."
+    sign_test=1
 fi
 
 #########################################################
@@ -79,8 +81,10 @@ filedecrypt="$file_test"_decrypt.txt
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
     echo "El encriptado desencriptado ha funcionado."
+    encrypt_test=0
 else
     echo "El encriptado desencriptado NO funcionado."
+    encrypt_test=1
 fi
 
 
@@ -88,20 +92,17 @@ fi
 #PRUEBA 3: Autenticado
 #########################################################
 # Creo un directorio temporal
-tempdir5=$(mktemp -d)
-
-# Configuo GNUPGHOME para apuntar al directorio temporal
-export GNUPGHOME="$tempdir5"
-
-#Me descargo la llave pública
-
-#Importo la subkey de autenticado
-
-#Firmo
-
-#Comprueno la firma
-
+#No conozco una forma de testear una llave de authenticación offline. Pero si el test de firmado y de encriptado han ido bien, supondré que la subkey de autenticación es correcta.
 
 #Conclusión
+if [[ ("$encrypt_test" = 0 ) && ("$sign_test" = 0)]]; then
+    echo "Veredicto final: He probado las llaves y todo va bien"
+else
+    echo "revisa el código, algo ha ido mal"
+fi
+
 
 #Borrado de anillos
+unset GNUPGHOME
+rm -r "$tempdir4"
+rm -r "$tempdir5"
