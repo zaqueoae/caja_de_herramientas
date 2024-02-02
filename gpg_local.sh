@@ -3,13 +3,10 @@
 # Explanation:
 #
 # This script generates unattended with gpg a private key and 3 subkeys.
-#
-# I export the main private key, the public key and the 3 subkeys to separate files.
-#
-# I write down the passphrase in 1 txt file.
-#
-# Import the public key to a public server.
-#
+# The primary private key, public key and the 3 subkeys are exported to separate files. 
+# This is not usual, since gpg "forces" all private keys to be exported together. To achieve this I had to use a "little trick".
+# The passphrase is noted in 1 txt file.
+# The public key is imported to a public server.
 # To do all this I use temporary directories, so when I'm done there is no trace left. Only the exported files remain.
 
 
