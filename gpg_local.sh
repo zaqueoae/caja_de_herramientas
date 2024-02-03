@@ -9,6 +9,8 @@
 # The public key is imported to a public server.
 # To do all this I use temporary directories, so when I'm done there is no trace left. Only the exported files remain.
 
+# Finally, I verify the authenticity of the public key by downloading it from the public server, sign and verify the signature, encrypt, decrypt and verify the decryption.
+
 
 #######################################################
 #gpg variables. Modify this
