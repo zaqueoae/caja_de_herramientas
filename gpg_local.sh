@@ -276,7 +276,7 @@ rm -r "$tempdir3"
 rm -r "$tempdir4"
 rm -r "$tempdir5"
 
-#Mato al fpf agent
+#Mato al gpg agent
 gpgconf --kill gpg-agent 
 #MAto los procesos de gpgagent
 pkill gpg-agent
