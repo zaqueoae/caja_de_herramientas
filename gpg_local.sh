@@ -15,7 +15,7 @@
 #######################################################
 #gpg variables. Modify this
 email="info@pacopepe3242335.com"
-nombre="Paco Pepe"
+name="Paco Pepe"
 tag="Viva Cristo Rey"
 lenghtkey="4096"
 typekey="RSA"
@@ -78,7 +78,7 @@ gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 gpg --generate-key --batch <<eoGpgConf
     Key-Type: $typekey
     Key-Length: $lenghtkey
-    Name-Real: $nombre
+    Name-Real: $name
     Name-Comment: $tag
     Name-Email: $email
     Expire-Date: $expiregpg
@@ -163,12 +163,12 @@ sudo kill -9 "$pidrngd"
 
 
 echo ""
-echo "Ahora voy a comprobar que todo va bien."
-echo "Voy a probar que la llave publica descarga bien y es la que yo he importado."
-echo "Voy a probar que firmo y verifico la firma correctamente."
-echo "Voy a probar que encripto y desencripto correctamente."
-echo "Voy a dejar las pruebas en la carpeta test_llaves/"
-echo "Allá voy"
+echo "Now I'm going to check that everything is okay."
+echo "I'm going to test that the public key downloads correctly and is the one I imported."
+echo "I'm going to test that I sign and verify the signature correctly."
+echo "I'm going to test that I encrypt and decrypt correctly."
+echo "I'm going to leave the tests in the test_keys/ folder"
+echo "There I go"
 echo ""
 
 
@@ -207,10 +207,10 @@ gpg --verify "$file_test"_sign.gpg
 compruebo=$?
 
 if [ "$compruebo" -eq 0 ]; then
-    echo "La verificación de la firma fue exitosa."
+    echo "The signature verification was successful."
     sign_test=0
 else
-    echo "La verificación de la firma falló."
+    echo "Signature verification FAILED."
     exit
 fi
 
@@ -244,25 +244,19 @@ filenoencrypt="$(<test_llaves/texto.txt)"
 filedecrypt="$(<${file_test}_decrypt.txt)"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
-    echo "El encriptado y desencriptado SI ha funcionado."
+    echo "The encryption and decryption YES has worked."
     encrypt_test=0
 else
-    echo "El encriptado desencriptado NO ha funcionado."
+    echo "Decryption encryption has NOT worked."
     exit
 fi
 
 
-
-#########################################################
-#PRUEBA 3: Autenticado
-#########################################################
-#No conozco una forma de testear una llave de authenticación offline. Pero si el test de firmado y de encriptado han ido bien, supondré que la subkey de autenticación es correcta.
-
 #Conclusión
 if [[ ("$encrypt_test" = 0 ) && ("$sign_test" = 0)]]; then
-    echo "Veredicto final: He probado las llaves y todo va bien"
+    echo "Final verdict: I have tested the keys and everything is fine"
 else
-    echo "revisa el código, algo ha ido mal"
+    echo "Check the code, something has gone wrong with the signing or encryption"
 fi
 
 #Me cargo las variables con contenido sensible
