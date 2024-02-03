@@ -265,7 +265,7 @@ fi
 gpg --encrypt --recipient "$email" "$file_test"
 
 #Desencripto
-echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --output decrypt_${file_test} --decrypt ${file_test}.gpg
+echo "$passphrase" | gpg --homedir "$GNUPGHOME" --batch --yes --passphrase-fd 0 --output decrypt_${file_test} --decrypt ${file_test}.gpg
 
 #Compruebo que le desencriptado ha ido bien
 filenoencrypt="$(<$file_test)"
