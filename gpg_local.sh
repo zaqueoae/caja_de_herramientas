@@ -268,8 +268,8 @@ gpg --encrypt --recipient "$email" "$file_test"
 echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --output decrypt_${file_test} --decrypt ${file_test}.gpg
 
 #Compruebo que le desencriptado ha ido bien
-filenoencrypt="$(<"$file_test")"
-filedecrypt="$(<decrypt_${file_test})"
+filenoencrypt="$(<$file_test)"
+filedecrypt="$(<decrypt_$file_test)"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
     echo "The encryption and decryption YES has worked."
