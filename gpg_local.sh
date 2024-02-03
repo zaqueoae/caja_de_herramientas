@@ -14,8 +14,6 @@
 
 #######################################################
 #gpg variables. Modify this
-email="info@pacopepe3242335.com"
-name="Paco Pepe"
 tag="Viva Cristo Rey"
 lenghtkey="4096"
 typekey="RSA"
@@ -55,6 +53,28 @@ comprobacion_autenticidad_llave_publica(){
 # Fin Funciones
 ############################
 
+PS3='Are you on an airgapped computer or a computer connected to the internet? Please enter your choice: '
+options=("Airgapped" "Internet" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Airgapped")
+            airgap=1
+            break
+            ;;
+        "Internet")
+            airgap=0
+            break
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
+read -r -p "What is your name? " name
+read -r -p "What is your email? " email
 
 # Crear un directorio temporal
 tempdir=$(mktemp -d)
@@ -71,7 +91,6 @@ echo "$passphrase" >> llaves_backup/passwd.txt
 sudo rngd -r /dev/urandom
 
 #Reinicio el agente gpg
-gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 gpgconf --kill gpg-agent  # Required, if agent_genkey fail...
 
 #Creo la llave privada
@@ -96,9 +115,10 @@ gpg --output llaves_backup/publickey.gpg --armor --export "$email"
 #Obtengo el id de la llave privada
 keyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
 
-#Envío la llave publica a un servidor publico
-gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
-
+if [[ "$airgap" = 0 ]]; then
+    #Envío la llave publica a un servidor publico
+    gpg --keyserver keyserver.ubuntu.com --send-keys "$keyid"
+fi
 
 
 
@@ -193,7 +213,15 @@ tempdir4=$(mktemp -d)
 
 # Configuo GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME="$tempdir4"
-comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_sign.pgp
+
+if [[ "$airgap" = 0 ]]; then
+    comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_sign.pgp
+else
+    #Importo la llave publica desde el archivo
+    gpg --import llaves_backup/publickey.gpg
+    #Importo la subkey de firma
+    echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_sign.pgp
+fi
 
 #Obtengo el id de la subkey de firma
 subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
@@ -215,8 +243,6 @@ else
 fi
 
 
-
-
 #################
 # Comprobación de la llave de cifrado
 #################
@@ -225,23 +251,25 @@ fi
 tempdir5=$(mktemp -d)
 # Configuo GNUPGHOME para apuntar al directorio temporal
 export GNUPGHOME="$tempdir5"
-comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_encrypt.pgp
 
-#Obtengo el id de la subkey de cifrado
-subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+if [[ "$airgap" = 0 ]]; then
+    comprobacion_autenticidad_llave_publica "$passphrase" "$email" llaves_backup/subkey_encrypt.pgp
+else
+    #Importo la llave publica desde el archivo
+    gpg --import llaves_backup/publickey.gpg
+    #Importo la subkey de firma
+    echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import llaves_backup/subkey_encrypt.pgp
+fi
 
 #Cifro
-gpg --trust-model always --yes --output "${file_test}_encrypt.gpg" --encrypt --recipient "$email" "$file_test"
-
-#Obtengo el id de la subkey de encriptado
-subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+gpg --encrypt --recipient "$email" "$file_test"
 
 #Desencripto
-echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user ${subkeyid} --output ${file_test}_decrypt.txt --decrypt ${file_test}_encrypt.gpg
+echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --output decrypt_${file_test} --decrypt ${file_test}.gpg
 
 #Compruebo que le desencriptado ha ido bien
-filenoencrypt="$(<test_llaves/texto.txt)"
-filedecrypt="$(<${file_test}_decrypt.txt)"
+filenoencrypt="$(<"$file_test")"
+filedecrypt="$(<decrypt_${file_test})"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
     echo "The encryption and decryption YES has worked."
@@ -255,6 +283,8 @@ fi
 #Conclusión
 if [[ ("$encrypt_test" = 0 ) && ("$sign_test" = 0)]]; then
     echo "Final verdict: I have tested the keys and everything is fine"
+    echo "I have left the keys and the passphrase in /llaves_backup/"
+    echo "Bye"
 else
     echo "Check the code, something has gone wrong with the signing or encryption"
 fi
