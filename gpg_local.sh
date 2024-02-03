@@ -198,6 +198,7 @@ rm -rf test_llaves
 mkdir -p test_llaves
 echo "Ave María Purísima" >> test_llaves/texto.txt
 file_test="test_llaves/texto.txt"
+file_test_decrypt="test_llaves/decrypt_texto.txt"
 
 
 #Reinicio el agente gpg
@@ -264,12 +265,15 @@ fi
 #Cifro
 gpg --encrypt --recipient "$email" "$file_test"
 
+#Obtengo el id de la subkey de encriptado
+subkeyid=$(gpg --list-keys --keyid-format SHORT "$email" | grep pub | cut -d'/' -f2 | cut -d' ' -f1)
+
 #Desencripto
-echo "$passphrase" | gpg --homedir "$GNUPGHOME" --batch --yes --passphrase-fd 0 --output decrypt_${file_test} --decrypt ${file_test}.gpg
+echo "$passphrase" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --local-user ${subkeyid} --output ${file_test_decrypt} --decrypt ${file_test}.gpg
 
 #Compruebo que le desencriptado ha ido bien
 filenoencrypt="$(<$file_test)"
-filedecrypt="$(<decrypt_$file_test)"
+filedecrypt="$(<$file_test_decrypt)"
 
 if [[ "$filenoencrypt" = "$filedecrypt" ]]; then
     echo "The encryption and decryption YES has worked."
