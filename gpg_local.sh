@@ -153,24 +153,11 @@ subkey_fingerprint=$(gpg --list-keys --with-subkey-fingerprint "$email" | awk '/
 #Exporto la subkey
 echo $passphrase | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --export-secret-subkeys "$subkey_fingerprint"! > llaves_backup/subkey_auth.pgp
 
-#Me cargo las variables con contenido sensible
-unset passphrase
-unset FPR
 
 #Paro la generación de entropía
 pidrngd=$(pgrep rngd)
 sudo kill -9 "$pidrngd"
 
-#Mato al fpf agent
-gpgconf --kill gpg-agent 
-#MAto los procesos de gpgagent
-pkill gpg-agent
-
-#borro el directorio de gpg temporal y vuelvo a colocar el principal
-unset GNUPGHOME
-rm -r $tempdir
-rm -r $tempdir2
-rm -r $tempdir3
 
 
 echo ""
@@ -183,21 +170,6 @@ echo "Allá voy"
 echo ""
 
 
-#Mato al fpf agent
-gpgconf --kill gpg-agent 
-#MAto los procesos de gpgagent
-pkill gpg-agent
-
-
-unset GNUPGHOME
-rm -rf "$tempdir4"
-rm -rf "$tempdir5"
-
-#gpg variables. Modify this
-email="info@pacopepe3242335.com"
-
-#Obtengo la passphrase
-passphrase="$(<llaves_backup/passwd.txt)"
 
 #Creo una carpeta y un archivo para los test
 rm -rf test_llaves
@@ -291,9 +263,16 @@ else
     echo "revisa el código, algo ha ido mal"
 fi
 
+#Me cargo las variables con contenido sensible
+unset passphrase
+unset FPR
+
 
 #Borrado de anillos
 unset GNUPGHOME
+rm -r "$tempdir"
+rm -r "$tempdir2"
+rm -r "$tempdir3"
 rm -r "$tempdir4"
 rm -r "$tempdir5"
 
