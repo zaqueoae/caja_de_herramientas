@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Ejemplo de uso: gpg_importar_llave_publica mitia@g.com  bashcatinfog/llaves/llave_publica.pub bashcatinfog/llaves/subkey_sign.pgp
-gpg_importar_llave_publica () {
+gpg_importar_llave_publica_desde_archivo () {
 
 email="$1"
 path_public_key="$2"
@@ -27,7 +27,7 @@ echo $passphrase | gpg --batch --yes --passphrase-fd 0 --import "$path_private_k
 
 
 #Ejemplo de uso: comprime_firma_encripta /root/backup backup mitia@g.com
-comprime_firma_encripta(){
+comprime_firma_encripta_backup(){
 folder="$1"
 file="$2"
 email="$3"
