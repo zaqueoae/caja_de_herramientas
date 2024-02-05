@@ -16,7 +16,9 @@ fingerprint=$(gpg --with-colons --fingerprint "$email" | awk -F: '/fpr/ {print $
 # Crea el archivo de confianza
 echo "${fingerprint}:6:" | gpg --import-ownertrust
 }
-gpg_importar_llave_privada(){
+
+
+gpg_importar_llave_privada_desde_archivo(){
 # Pregunta por la passphrase de la subkey de firma
 read -r -s -p "Escribe la passphrase de la subkey de firma: " passphrase
 
