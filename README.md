@@ -42,23 +42,12 @@ curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramienta
 bash ~/inicio.sh aplicacion && rm -f ~/inicio.sh
 ```
 
-## Nodo Master
+## Nodo Bases de datos
 ```
 curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh?v=1
-bash ~/inicio.sh master && rm -f ~/inicio.sh
+bash ~/inicio.sh db && rm -f ~/inicio.sh
 ```
 
-## Nodo Esclavo 1
-```
-curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh?v=1
-bash ~/inicio.sh esclavo_1 && rm -f ~/inicio.sh
-```
-
-## Nodo Esclavo 2
-```
-curl -o inicio.sh https://raw.githubusercontent.com/zaqueoae/caja_de_herramientas/main/inicio.sh?v=1
-bash ~/inicio.sh esclavo_2 && rm -f ~/inicio.sh
-```
 
 ## Nodo Orquestador
 ```
